@@ -1,0 +1,18 @@
+{
+    "actions": [
+                {
+                "action": "Edit",
+                "image": "http://albertut.com/acrobat.jpg"
+                },
+                {
+                "action": "Delete",
+                "image": "http://albertut.com/acrobat.jpg"
+                
+                },
+                {
+                "action": "Save",
+                "image": "http://albertut.com/acrobat.jpg"
+                
+                }
+                ]
+}
