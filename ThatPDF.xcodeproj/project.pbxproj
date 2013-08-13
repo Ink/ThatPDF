@@ -215,7 +215,7 @@
 		027DE5F517B9E4AC00BCA4FE /* WelcomeThatPDF@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WelcomeThatPDF@2x.png"; sourceTree = "<group>"; };
 		027DE5F617B9E4AC00BCA4FE /* WelcomeThatPhoto.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WelcomeThatPhoto.png; sourceTree = "<group>"; };
 		027DE5F717B9E4AC00BCA4FE /* WelcomeThatPhoto@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WelcomeThatPhoto@2x.png"; sourceTree = "<group>"; };
-		027DE60717B9E4B300BCA4FE /* ATConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; name = ATConnect.h; path = "Vendor/apptentive-ios/ApptentiveConnect/source/ATConnect.h"; sourceTree = "<group>"; };
+		027DE60717B9E4B300BCA4FE /* ATConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ATConnect.h; path = "Vendor/apptentive-ios/ApptentiveConnect/source/ATConnect.h"; sourceTree = "<group>"; };
 		027DE60A17B9E67300BCA4FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		027DE60D17B9E69F00BCA4FE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		027DE60F17B9E6BB00BCA4FE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };

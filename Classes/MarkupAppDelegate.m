@@ -105,6 +105,7 @@
 	[self prePopulateCoreData]; // Pre-populate Core Data store with various default objects
 
     [Ink setupWithAppKey:@"AffsVXnXNLPDFkRumVoz"];
+    [[INKCoreManager sharedManager] registerAdditionalURLScheme:@"thatpdf"];
 
     INKAction *view = [INKAction action:@"View" type:INKActionType_View];
     INKAction *annotate = [INKAction action:@"Annotate" type:INKActionType_Annotate];
