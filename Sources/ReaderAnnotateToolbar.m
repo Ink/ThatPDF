@@ -40,7 +40,7 @@
 
 @synthesize delegate;
 
-#pragma mark ReaderMainToolbar instance methods
+#pragma mark ReaderAnnotateToolbar instance methods
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -62,6 +62,9 @@
 		UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
         
 		cancelButton.frame = CGRectMake(leftButtonX, BUTTON_Y, CANCEL_BUTTON_WIDTH, BUTTON_HEIGHT);
+
+        //Determine what language to use in the back button - if we were launched with Ink, we want
+        //to signal that ending means Ink will open up
         if ([Ink appShouldReturn]) {
             [cancelButton setTitle:NSLocalizedString(@"Back", @"button") forState:UIControlStateNormal];
         } else {

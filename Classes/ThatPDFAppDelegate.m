@@ -92,6 +92,7 @@
 #pragma mark UIApplicationDelegate methods
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    //When launched, we first hand the request out
     if ([Ink openURL:url sourceApplication:sourceApplication annotation:annotation]){
         //If we're opened via a url, make sure we don't show welcome flow, etc. - user should be taken directly to action
         [INKWelcomeViewController setShouldRunWelcomeFlow:NO];
@@ -106,9 +107,14 @@
 
 	[self prePopulateCoreData]; // Pre-populate Core Data store with various default objects
 
+    //Setting up Ink with our App key.
     [Ink setupWithAppKey:@"AffsVXnXNLPDFkRumVoz"];
+    //XXX - Because we now use the ink-<apikey> url schemes, apps should not need to register
+    //additional url schemes that they listen for Ink actions on. This is just for backwards compatibility
+    //with the earliest versions of the sample apps, and should be removed asap.
     [[INKCoreManager sharedManager] registerAdditionalURLScheme:@"thatpdf"];
 
+    //Creating and registering the three actions ThatPDF supports
     INKAction *view = [INKAction action:@"View" type:INKActionType_View];
     INKAction *annotate = [INKAction action:@"Annotate" type:INKActionType_Annotate];
     INKAction *sign = [INKAction action:@"Sign" type:INKActionType_Sign];
@@ -194,27 +200,36 @@
 	NSLog(@"%s", __FUNCTION__);
 }
 
-#pragma mark InkAction methods
+#pragma mark Ink actions
+//This action just opens the passed in file, but doesn't enter any annotation mode
 - (void) viewBlob:(INKBlob *)blob action:(INKAction*)action error:(NSError*)error
 {
+    //Opening the file
     [[DocumentsUpdate sharedInstance] handleOpenBlob:blob];
     
+    //Clearing annotations
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter postNotificationName:DocumentsSetAnnotationModeOffNotification object:nil userInfo:nil];
 }
 
+//This action just opens the passed in file, and enters annotation mode (with a red pen)
 - (void) annotateBlob:(INKBlob *)blob action:(INKAction*)action error:(NSError*)error
 {
+    //Opening the file
     [[DocumentsUpdate sharedInstance] handleOpenBlob:blob];
     
+    //Jumping into Annotation mode
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter postNotificationName:DocumentsSetAnnotationModeRedPenNotification object:nil userInfo:nil];
 }
 
+//This action just opens the passed in file, and enters signing mode (draw with thin black pen)
 - (void) signBlob:(INKBlob *)blob action:(INKAction*)action error:(NSError*)error
 {
+    //Opening the file
     [[DocumentsUpdate sharedInstance] handleOpenBlob:blob];
     
+    //Jumping into Signing mode
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter postNotificationName:DocumentsSetAnnotationModeSignNotification object:nil userInfo:nil];
 }
