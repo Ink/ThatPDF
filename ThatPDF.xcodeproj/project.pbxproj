@@ -1040,8 +1040,6 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../Vendor\"",
-					"\"$(SRCROOT)/../../Downloads/Ink-ios-7a46baa/library\"",
 					"\"$(SRCROOT)/Vendor\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1072,8 +1070,6 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../Vendor\"",
-					"\"$(SRCROOT)/../../Downloads/Ink-ios-7a46baa/library\"",
 					"\"$(SRCROOT)/Vendor\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1130,8 +1126,6 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../Vendor\"",
-					"\"$(SRCROOT)/../../Downloads/Ink-ios-7a46baa/library\"",
 					"\"$(SRCROOT)/Vendor\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
