@@ -38,7 +38,6 @@
 		0288558E17A89D72004B5CCF /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0288558D17A89D72004B5CCF /* AssetsLibrary.framework */; };
 		0288559517A8C75F004B5CCF /* leaseagreement.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 0288559317A8C75F004B5CCF /* leaseagreement.pdf */; };
 		0288559617A8C75F004B5CCF /* nda.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 0288559417A8C75F004B5CCF /* nda.pdf */; };
-		02B510FC178DD316002CC7B2 /* AnnotationSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B510FB178DD316002CC7B2 /* AnnotationSelectionViewController.m */; };
 		02B510FF178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */; };
 		02B51102178DE55E002CC7B2 /* AnnotationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B51101178DE55E002CC7B2 /* AnnotationViewController.m */; };
 		02D6AE8217A27DAB0044ACF7 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02D6AE8117A27DAB0044ACF7 /* QuickLook.framework */; };
@@ -221,8 +220,6 @@
 		0288558D17A89D72004B5CCF /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		0288559317A8C75F004B5CCF /* leaseagreement.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = leaseagreement.pdf; path = Resources/leaseagreement.pdf; sourceTree = "<group>"; };
 		0288559417A8C75F004B5CCF /* nda.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = nda.pdf; path = Resources/nda.pdf; sourceTree = "<group>"; };
-		02B510FA178DD316002CC7B2 /* AnnotationSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotationSelectionViewController.h; path = Sources/AnnotationSelectionViewController.h; sourceTree = "<group>"; };
-		02B510FB178DD316002CC7B2 /* AnnotationSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotationSelectionViewController.m; path = Sources/AnnotationSelectionViewController.m; sourceTree = "<group>"; };
 		02B510FD178DDD8D002CC7B2 /* ReaderAnnotateToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderAnnotateToolbar.h; path = Sources/ReaderAnnotateToolbar.h; sourceTree = "<group>"; };
 		02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderAnnotateToolbar.m; path = Sources/ReaderAnnotateToolbar.m; sourceTree = "<group>"; };
 		02B51100178DE55E002CC7B2 /* AnnotationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotationViewController.h; path = Sources/AnnotationViewController.h; sourceTree = "<group>"; };
@@ -555,6 +552,21 @@
 			path = Graphics/ReaderToolbarIcons;
 			sourceTree = "<group>";
 		};
+		02E96E2E17C557D200969697 /* Annotations */ = {
+			isa = PBXGroup;
+			children = (
+				02B510FD178DDD8D002CC7B2 /* ReaderAnnotateToolbar.h */,
+				02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */,
+				02EFF259178D0C2A009D04B4 /* AnnotationStore.h */,
+				02EFF25A178D0C2A009D04B4 /* AnnotationStore.m */,
+				02FDF8E2178D1E12004FA109 /* Annotation.h */,
+				02FDF8E3178D1E12004FA109 /* Annotation.m */,
+				02B51100178DE55E002CC7B2 /* AnnotationViewController.h */,
+				02B51101178DE55E002CC7B2 /* AnnotationViewController.m */,
+			);
+			name = Annotations;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -721,8 +733,6 @@
 				458D3A1A142A580F00F15953 /* ReaderViewController.m */,
 				458D3A07142A580F00F15953 /* ReaderMainToolbar.h */,
 				458D3A08142A580F00F15953 /* ReaderMainToolbar.m */,
-				02B510FD178DDD8D002CC7B2 /* ReaderAnnotateToolbar.h */,
-				02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */,
 				458D3A05142A580F00F15953 /* ReaderMainPagebar.h */,
 				458D3A06142A580F00F15953 /* ReaderMainPagebar.m */,
 				458D3A01142A580F00F15953 /* ReaderContentView.h */,
@@ -735,14 +745,7 @@
 				458D3A1E142A580F00F15953 /* ThumbsViewController.m */,
 				458D3A1B142A580F00F15953 /* ThumbsMainToolbar.h */,
 				458D3A1C142A580F00F15953 /* ThumbsMainToolbar.m */,
-				02EFF259178D0C2A009D04B4 /* AnnotationStore.h */,
-				02EFF25A178D0C2A009D04B4 /* AnnotationStore.m */,
-				02FDF8E2178D1E12004FA109 /* Annotation.h */,
-				02FDF8E3178D1E12004FA109 /* Annotation.m */,
-				02B510FA178DD316002CC7B2 /* AnnotationSelectionViewController.h */,
-				02B510FB178DD316002CC7B2 /* AnnotationSelectionViewController.m */,
-				02B51100178DE55E002CC7B2 /* AnnotationViewController.h */,
-				02B51101178DE55E002CC7B2 /* AnnotationViewController.m */,
+				02E96E2E17C557D200969697 /* Annotations */,
 			);
 			name = "Reader Sources";
 			sourceTree = "<group>";
@@ -990,7 +993,6 @@
 				45550E4F1612086C003F2FAA /* ReaderDocumentOutline.m in Sources */,
 				02EFF25B178D0C2A009D04B4 /* AnnotationStore.m in Sources */,
 				02FDF8E4178D1E12004FA109 /* Annotation.m in Sources */,
-				02B510FC178DD316002CC7B2 /* AnnotationSelectionViewController.m in Sources */,
 				02B510FF178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m in Sources */,
 				02B51102178DE55E002CC7B2 /* AnnotationViewController.m in Sources */,
 				027DE5F817B9E4AC00BCA4FE /* INKWelcomeViewController.m in Sources */,
@@ -1050,6 +1052,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ThatPDF-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
 				INFOPLIST_FILE = "ThatPDF-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1078,6 +1083,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ThatPDF-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
 				INFOPLIST_FILE = "ThatPDF-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1134,6 +1142,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ThatPDF-Prefix.pch";
 				GCC_THUMB_SUPPORT = NO;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
 				INFOPLIST_FILE = "ThatPDF-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_LDFLAGS = "-ObjC";
