@@ -208,7 +208,7 @@
 
 		theTitleLabel = [[UILabel alloc] initWithFrame:titleRect];
 
-		theTitleLabel.textAlignment = UITextAlignmentCenter;
+		theTitleLabel.textAlignment = NSTextAlignmentCenter;
 		theTitleLabel.font = [UIFont systemFontOfSize:19.0f];
 		theTitleLabel.textColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
 		theTitleLabel.shadowColor = [UIColor colorWithWhite:0.65f alpha:1.0f];
@@ -217,7 +217,7 @@
 		theTitleLabel.backgroundColor = [UIColor clearColor];
 		theTitleLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		theTitleLabel.adjustsFontSizeToFitWidth = YES;
-		theTitleLabel.minimumFontSize = 14.0f;
+		theTitleLabel.minimumScaleFactor = 14.0f/19.f;
 
 		theTitleLabel.text = NSLocalizedString(@"ThatPDF Document Library", @"text");
 
@@ -443,7 +443,9 @@
 		helpViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 		helpViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 
-		[self.ownViewController presentModalViewController:helpViewController animated:YES];
+		[self.ownViewController presentViewController:helpViewController animated:YES completion:^{
+            
+        }];
 	}
 }
 
@@ -537,7 +539,7 @@
 
 - (void)dismissHelpViewController:(HelpViewController *)viewController
 {
-	[self.ownViewController dismissModalViewControllerAnimated:YES];
+	[self.ownViewController dismissViewControllerAnimated:YES completion:^{}];
 }
 
 #pragma mark UIApplication notifications
@@ -623,7 +625,7 @@
 		textLabel.font = [UIFont systemFontOfSize:(large ? 17.0f : 16.0f)];
 		textLabel.textColor = [UIColor colorWithWhite:0.24f alpha:1.0f];
 		textLabel.backgroundColor = [UIColor clearColor];
-		textLabel.textAlignment = UITextAlignmentCenter;
+		textLabel.textAlignment = NSTextAlignmentCenter;
 		//textLabel.adjustsFontSizeToFitWidth = YES;
 		//textLabel.minimumFontSize = 14.0f;
 		//textLabel.layer.cornerRadius = 4.0f;

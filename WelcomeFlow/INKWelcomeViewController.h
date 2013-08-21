@@ -11,7 +11,6 @@
 
 @interface INKWelcomeViewController : UIViewController
 @property IBOutlet PagedScrollView *pageScrollView;
-@property UIViewController *nextViewController;
 
 + (BOOL) shouldRunWelcomeFlow;
 + (void) setShouldRunWelcomeFlow:(BOOL)should;

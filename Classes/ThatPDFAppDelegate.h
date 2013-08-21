@@ -1,5 +1,5 @@
 //
-//	main.m
+//	ViewerAppDelegate.h
 //	Viewer v1.0.0
 //
 //	Created by Julius Oklamcak on 2012-09-01.
@@ -25,10 +25,6 @@
 
 #import <UIKit/UIKit.h>
 
-int main(int argc, char *argv[])
-{
-	@autoreleasepool
-	{
-		return UIApplicationMain(argc, argv, nil, @"ThatPDFAppDelegate");
-	}
-}
+@interface ThatPDFAppDelegate : NSObject <UIApplicationDelegate>
+
+@end

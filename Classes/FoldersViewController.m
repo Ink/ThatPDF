@@ -155,7 +155,7 @@
 
 	theTitleLabel = [[UILabel alloc] initWithFrame:titleRect];
 
-	theTitleLabel.textAlignment = UITextAlignmentCenter;
+	theTitleLabel.textAlignment = NSTextAlignmentCenter;
 	theTitleLabel.font = [UIFont systemFontOfSize:19.0f];
 	theTitleLabel.textColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
 	theTitleLabel.shadowColor = [UIColor colorWithWhite:0.65f alpha:1.0f];
@@ -273,7 +273,8 @@
 	{
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"tvCellFolder"];
 
-		cell.textLabel.font = [UIFont systemFontOfSize:17.0]; cell.textLabel.textAlignment = UITextAlignmentCenter;
+		cell.textLabel.font = [UIFont systemFontOfSize:17.0];
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
 
 		cell.selectionStyle = UITableViewCellSelectionStyleGray; // Use gray instead of blue
 	}

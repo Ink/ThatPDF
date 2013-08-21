@@ -77,7 +77,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.inkmobility.thatpdf</string>
+			<string>Deprecated</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>thatpdf</string>
@@ -87,7 +87,7 @@
 	<key>CFBundleVersion</key>
 	<string>0.3.0</string>
 	<key>Filepicker API Key</key>
-	<string>AUxlPW9gwQY6XjXZOl89qz</string>
+	<string>Avt5MVkbnSbKlBRg3HUziz</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIFileSharingEnabled</key>
