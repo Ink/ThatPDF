@@ -349,11 +349,22 @@
 	theScrollView.autoresizesSubviews = NO;
 	theScrollView.delegate = self;
     
+    //Adding Ink handler onto the thumb so that you can double-tap on the pdf
+    //We do the retreival dynamically so that we can construct the annotated pdf in a non-blocking way.
     [theScrollView INKEnableWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
+        //Getting the data out of the annotated version of the document
         INKBlob *blob = [INKBlob blobFromLocalFile:[ReaderDocument urlForAnnotatedDocument:document]];
         blob.uti = @"com.adobe.pdf";
         blob.filename = document.fileName;
         return blob;
+    } returnBlock:^(INKBlob *result, INKAction *action, NSError *error) {
+        //We chose to handle the return actions here rather than by registering return actions,
+        //so we need to do a bit of checking to see if this was a case where the user
+        //canceled their action, or where they have new data to pass back and overwrite the file with.
+        if ([action.type isEqualToString:INKActionType_ReturnCancel]) {
+            return;
+        }
+        [result.data writeToURL:document.fileURL atomically:YES];
     }];
 	[self.view addSubview:theScrollView];
 
@@ -979,13 +990,21 @@
 
 - (void) tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar cancelButton:(UIButton *)button {
     [self cancelAnnotation];
+    
+    //If we're in an Ink workflow, we don't want to return them to the document - instead, we want to bring
+    //up Ink
     if ([Ink appShouldReturn]) {
         document.password = nil; // Clear out any document password
         [[ReaderThumbQueue sharedInstance] cancelOperationsWithGUID:document.guid];
+        
+        //Create a blob from the local data. This will auto-set the filename and uti from the file name/extension,
+        //but we overwrite because we have better info
         INKBlob *blob = [INKBlob blobFromLocalFile:document.fileURL];
         blob.filename = document.fileName;
+        //We always have PDFs
         blob.uti = @"com.adobe.pdf";
         
+        //Launches the Ink workspace to return the given data
         [Ink returnBlob:blob];
     }
 }
@@ -993,9 +1012,13 @@
 - (void) tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar doneButton:(UIButton *)button {
     [self finishAnnotation];
     
+    //If we're in an Ink workflow, we don't want to return them to the document - instead, we want to bring
+    //up Ink
     if ([Ink appShouldReturn]) {
         [[ReaderThumbQueue sharedInstance] cancelOperationsWithGUID:document.guid];
         
+        //We show the workspace dynamically so that we can redner the annotations into the PDF
+        //in a non-blocking fashion.
         [Ink showWorkspaceWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
             [document saveReaderDocumentWithAnnotations]; // Save any ReaderDocument object changes
             document.password = nil; // Clear out any document password

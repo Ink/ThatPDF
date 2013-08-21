@@ -406,14 +406,17 @@
 
 		BOOL checked = document.isChecked; [thumbCell showCheck:checked]; // Show checked status
         
-        //Adding Ink
+        //Adding Ink handler onto the thumb so that you can double-tap on a thumbnail
         [thumbCell INKEnableWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
-            //INKBlob *blob = [INKBlob blobFromLocalFile:[ReaderDocument urlForAnnotatedDocument:document]];
+            //Constructing the blob from the local data
             INKBlob *blob = [INKBlob blobFromLocalFile:document.fileURL];
             blob.filename = document.fileName;
             blob.uti = @"com.adobe.pdf";
             return blob;
         } returnBlock:^(INKBlob *result, INKAction *action, NSError *error) {
+            //We chose to handle the return actions here rather than by registering return actions,
+            //so we need to do a bit of checking to see if this was a case where the user
+            //canceled their action, or where they have new data to pass back and overwrite the file with.
             if ([action.type isEqualToString:INKActionType_ReturnCancel]) {
                 return;
             }

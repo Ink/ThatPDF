@@ -148,6 +148,7 @@
     
     // Insert the new document into the object store
     NSString *filename = theBlob.filename;
+    // We can't be sure we will always have a filename, so add a safeguard
     if (!filename) {
         filename = @"Document.pdf";
     }
@@ -155,18 +156,15 @@
     if (![[filename pathExtension] isEqualToString:@"pdf"]) {
         filename = [filename stringByAppendingString:@".pdf"];
     }
-    //Crashes if we have spaces
+    //The PDF loader crashes if we have spaces, so we replace them with dashes
     filename = [filename stringByReplacingOccurrencesOfString:@" " withString:@"-"];
-    NSLog(@"Handle open blob: Filename %@", filename);
+    
+    //Writing the blob data to the filesystem
     NSString *documentsPath = [DocumentsUpdate documentsPath]; // Documents path
-    
-    //Writing to filesystem
     NSString *documentFilePath = [documentsPath stringByAppendingPathComponent:filename];
-    NSLog(@"Documents path: %@", documentFilePath);
-    
-    NSLog(@"Data size: %d", [theBlob.data length]);
     [theBlob.data writeToFile:documentFilePath atomically:YES];
     
+    //Creating the CoreData object
     ReaderDocument *document = [ReaderDocument insertInMOC:mainMOC name:filename path:documentsPath];
         
     [[CoreDataManager sharedInstance] saveMainManagedObjectContext]; // Save changes
