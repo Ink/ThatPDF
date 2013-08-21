@@ -154,12 +154,12 @@
 
 		theTitleLabel = [[UILabel alloc] initWithFrame:titleRect];
 
-		theTitleLabel.textAlignment = UITextAlignmentCenter;
+		theTitleLabel.textAlignment = NSTextAlignmentCenter;
 		theTitleLabel.backgroundColor = [UIColor clearColor];
 		theTitleLabel.font = [UIFont systemFontOfSize:17.0f];
 		theTitleLabel.textColor = [UIColor whiteColor];
 		theTitleLabel.adjustsFontSizeToFitWidth = YES;
-		theTitleLabel.minimumFontSize = 15.0f;
+		theTitleLabel.minimumScaleFactor = 15.0f/17.f;
 
 		[theContentView addSubview:theTitleLabel]; // Add label to view
 
@@ -184,12 +184,12 @@
 
 		theStatusLabel = [[UILabel alloc] initWithFrame:statusRect];
 
-		theStatusLabel.textAlignment = UITextAlignmentCenter;
+		theStatusLabel.textAlignment = NSTextAlignmentCenter;
 		theStatusLabel.backgroundColor = [UIColor clearColor];
 		theStatusLabel.font = [UIFont systemFontOfSize:16.0f];
 		theStatusLabel.textColor = [UIColor grayColor];
 		theStatusLabel.adjustsFontSizeToFitWidth = YES;
-		theStatusLabel.minimumFontSize = 14.0f;
+		theStatusLabel.minimumScaleFactor = 14.0f/16.f;
 
 		[theContentView addSubview:theStatusLabel];
 

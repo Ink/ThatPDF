@@ -1,10 +1,11 @@
 //
-//  ReaderAnnotateToolbar.h
-//  Viewer
+//	ReaderAnnotateToolbar.h
+//	ThatPDF v0.3.1
 //
-//  Created by Brett van Zuiden on 7/10/13.
+//	Created by Brett van Zuiden.
+//	Copyright © 2013 Ink. All rights reserved.
 //
-//
+
 #import <UIKit/UIKit.h>
 
 #import "UIXToolbarView.h"

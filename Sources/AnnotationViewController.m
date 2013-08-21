@@ -1,9 +1,9 @@
 //
 //  AnnotationViewController.m
-//  Viewer
+//	ThatPDF v0.3.1
 //
-//  Created by Brett van Zuiden on 7/10/13.
-//
+//	Created by Brett van Zuiden.
+//	Copyright © 2013 Ink. All rights reserved.
 //
 
 #import "AnnotationViewController.h"
@@ -83,7 +83,6 @@ CGFloat const TEXT_FIELD_HEIGHT = 32;
 
 - (UITextField*) createTextField {
     UITextField *temp = [[UITextField alloc] initWithFrame:CGRectMake(400, 400, TEXT_FIELD_WIDTH, TEXT_FIELD_HEIGHT)];
-    //[textField addTarget:self action:@selector(finishTextAnnotation) forControlEvents:UIControlEventEditingDidEnd];
     temp.hidden = YES;
     temp.borderStyle = UITextBorderStyleLine;
     return temp;

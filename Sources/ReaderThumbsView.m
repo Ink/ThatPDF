@@ -515,10 +515,16 @@
 	{
 		UITouch *touch = [touches anyObject]; // Get touch from set
 
-		CGPoint point = [touch locationInView:touch.view]; // Touch location
+		//Old:
+        //CGPoint point = [touch locationInView:touch.view]; // Touch location
+
+        //New, bececause touch.view might has user interaction enabled, which throws off coordinate system:
+        CGPoint point = [touch locationInView:self]; // Touch location
 
 		ReaderThumbView *tvCell = [self thumbCellContainingPoint:point]; // Look for cell
 
+        NSLog(@"Point: %@, frame: %@", NSStringFromCGPoint(point), NSStringFromCGRect(tvCell.frame));
+        
 		if (tvCell != nil) { touchedCell = tvCell; [touchedCell showTouched:YES]; }
 	}
 }

@@ -1,9 +1,9 @@
 //
 //  Annotation.h
-//  Viewer
+//	ThatPDF v0.3.1
 //
-//  Created by Brett van Zuiden on 7/9/13.
-//
+//	Created by Brett van Zuiden.
+//	Copyright © 2013 Ink. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

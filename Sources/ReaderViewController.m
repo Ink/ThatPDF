@@ -32,7 +32,6 @@
 #import "ReaderContentView.h"
 #import "ReaderThumbCache.h"
 #import "ReaderThumbQueue.h"
-#import "AnnotationSelectionViewController.h"
 #import "DocumentsUpdate.h"
 
 #import <MessageUI/MessageUI.h>
@@ -392,16 +391,6 @@
 	doubleTapOne.numberOfTouchesRequired = 1; doubleTapOne.numberOfTapsRequired = 2; doubleTapOne.delegate = self;
 	[self.view addGestureRecognizer:doubleTapOne];
 
-    /*
-	UITapGestureRecognizer *doubleTapTwo = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-	doubleTapTwo.numberOfTouchesRequired = 2; doubleTapTwo.numberOfTapsRequired = 2; doubleTapTwo.delegate = self;
-	[self.view addGestureRecognizer:doubleTapTwo];
-
-    UILongPressGestureRecognizer *pressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePressGesture:)];
-    pressGesture.minimumPressDuration = 0.8; //pressGesture.numberOfTouchesRequired = 1; pressGesture.delegate = self;
-    [self.view addGestureRecognizer:pressGesture];
-    */
-
 	[singleTapOne requireGestureRecognizerToFail:doubleTapOne]; // Single tap requires double tap to fail
 
     //Annotation view controller
@@ -745,24 +734,6 @@
 	}
 }
 
-- (void)handlePressGesture:(UILongPressGestureRecognizer *)recognizer {
-    //not sure why, but this is sometimes called twice, and so we crash because we dealloc when visible
-    if ([self.popoverController isPopoverVisible]) {
-        return;
-    }
-    AnnotationSelectionViewController* content = [[AnnotationSelectionViewController alloc] init];
-    UIPopoverController* aPopover = [[UIPopoverController alloc]
-                                     initWithContentViewController:content];
-    //aPopover.delegate = self;
-    
-    // Store the popover in a custom property for later use.
-    self.popoverController = aPopover;
-    
-    CGPoint point = [recognizer locationInView:recognizer.view];
-    CGRect popoverRect = CGRectMake(point.x, point.y, 10, 10);
-    [self.popoverController presentPopoverFromRect:popoverRect inView:recognizer.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
-}
-
 #pragma mark ReaderContentViewDelegate methods
 
 - (void)contentView:(ReaderContentView *)contentView touchesBegan:(NSSet *)touches
@@ -844,7 +815,7 @@
 	thumbsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	thumbsViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
-	[self presentModalViewController:thumbsViewController animated:NO];
+	[self presentViewController:thumbsViewController animated:NO completion:^{}];
 }
 
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar printButton:(UIButton *)button
@@ -1099,7 +1070,9 @@
 		if ((result == MFMailComposeResultFailed) && (error != NULL)) NSLog(@"%@", error);
 	#endif
 
-	[self dismissModalViewControllerAnimated:YES]; // Dismiss
+	[self dismissViewControllerAnimated:YES completion:^{
+        
+    }]; // Dismiss
 }
 
 #pragma mark ThumbsViewControllerDelegate methods
@@ -1108,7 +1081,9 @@
 {
 	[self updateToolbarBookmarkIcon]; // Update bookmark icon
 
-	[self dismissModalViewControllerAnimated:NO]; // Dismiss
+	[self dismissViewControllerAnimated:NO completion:^{
+        
+    }]; // Dismiss
 }
 
 - (void)thumbsViewController:(ThumbsViewController *)viewController gotoPage:(NSInteger)page

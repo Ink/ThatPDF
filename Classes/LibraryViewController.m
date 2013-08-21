@@ -35,6 +35,7 @@
 #import "ReaderDocument.h"
 #import "CGPDFDocument.h"
 #import <FPPicker/FPPicker.h>
+#import "INKWelcomeViewController.h"
 
 @interface LibraryViewController () <LibraryDirectoryDelegate, LibraryDocumentsDelegate, ReaderViewControllerDelegate, UIScrollViewDelegate, FPPickerDelegate>
 
@@ -80,7 +81,7 @@
 {
 	NSInteger count = contentViews.count;
 
-    //BRETTCVZ: Removed assert
+    //BRETTCVZ: Removed assert because app was crashing unnecessarily
     if (count == 0) {
         NSLog(@"Count was 1");
         count = 1;
@@ -125,9 +126,11 @@
 		if (CGPDFDocumentNeedsPassword(fileURL, document.password) == NO) // Nope
 		{
             //TODO: Brettcvz - crashing because dismiss calls viewWillAppear on the old document, which isn't there anymore
-            if (self.modalViewController != nil) // Check for active view controller(s)
+            if (self.presentedViewController != nil) // Check for active view controller(s)
 			{
-				[self dismissModalViewControllerAnimated:NO]; // Dismiss any view controller(s)
+				[self dismissViewControllerAnimated:NO completion:^{
+                    
+                }]; // Dismiss any view controller(s)
 			}
 
 			NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults]; // User defaults
@@ -151,7 +154,9 @@
 			readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 			readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
-			[self presentModalViewController:readerViewController animated:NO];
+			[self presentViewController:readerViewController animated:NO completion:^{
+                
+            }];
 		}
 	}
 }
@@ -234,7 +239,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-	[super viewDidAppear:animated];
+    [super viewDidAppear:animated];
 
 	BOOL reload = NO; isVisible = YES;
 
@@ -319,6 +324,12 @@
 			}
 		}
 	}
+    
+    if ([INKWelcomeViewController shouldRunWelcomeFlow]) {
+        INKWelcomeViewController * welcomeViewController;
+        welcomeViewController = [[INKWelcomeViewController alloc] initWithNibName:@"INKWelcomeViewController" bundle:nil];
+        [self presentViewController:welcomeViewController animated:NO completion:^{}];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -526,7 +537,9 @@
 		readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 		readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
 
-		[self presentModalViewController:readerViewController animated:NO];
+		[self presentViewController:readerViewController animated:NO completion:^{
+            
+        }];
 	}
 }
 
@@ -543,7 +556,9 @@
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 	}
 
-	[self dismissModalViewControllerAnimated:NO]; readerViewController = nil; // Release ReaderViewController
+	[self dismissViewControllerAnimated:NO completion:^{
+        readerViewController = nil; // Release ReaderViewController
+    }];
 
 	[documentsView refreshRecentDocuments]; // Refresh if recent folder is visible
 }
@@ -660,7 +675,7 @@
 		titleLabel.text = [labelText stringByAppendingString:@"..."];
 		titleLabel.textColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
 		titleLabel.backgroundColor = [UIColor clearColor];
-		titleLabel.textAlignment = UITextAlignmentCenter;
+		titleLabel.textAlignment = NSTextAlignmentCenter;
 
 		titleLabel.autoresizingMask = resizingMask;
 
