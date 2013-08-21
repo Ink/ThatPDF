@@ -1,9 +1,9 @@
 //
-//  INKWelcomeViewController.m
-//  ThatPhoto
+//  INKWelcomeViewController.h
+//  ThatPDF
 //
 //  Created by Brett van Zuiden on 8/8/13.
-//  Copyright (c) 2013 Aviary. All rights reserved.
+//  Copyright (c) 2013 Ink. All rights reserved.
 //
 
 #import "INKWelcomeViewController.h"

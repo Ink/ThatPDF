@@ -1,4 +1,13 @@
 //
+//
+//	ThatPDFAppDelegate.h
+//	ThatPDF v0.3.1
+//
+//	Created by Brett van Zuiden.
+//	Copyright © 2013 Ink. All rights reserved.
+//
+//  Large parts of the source for this app are derived from:
+//
 //	ViewerAppDelegate.h
 //	Viewer v1.0.0
 //
