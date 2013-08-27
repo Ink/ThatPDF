@@ -1,5 +1,6 @@
-ThatPDF
+ThatPDF [![App Store](http://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png)](https://itunes.apple.com/us/app/thatpdf/id682246039)
 =========
+
 
 View, sign, and annotate your pdfs and other documents in ThatPDF.
 
@@ -14,7 +15,7 @@ ThatPDF is the central place for everything you need to do with your PDFs:
 
 Plus, ThatPDF integrates with [Ink](https://inkmobility.com), so you can sign and annotate pdfs from other applications in just a few taps. You can also take documents from inside ThatPDF and launch them into other apps, like Evernote, Mailer, and your cloud storage.
 
-The full list of features is detailed in our [blog post](http://blog.inkmobility.com/post/58830177894/introducing-thatcloud-your-portal-to-your-cloud). **TODO: fix blog post link**
+The full list of features is detailed in our [blog post](http://blog.inkmobility.com/post/59031713981/thatpdf-a-simple-way-to-annotate-and-sign-pdfs).
 
 ThatPDF is also currently available on the [App Store](https://itunes.apple.com/us/app/thatpdf/id682246039)
 
