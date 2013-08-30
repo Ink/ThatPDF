@@ -128,7 +128,7 @@
 		4521C5B01360DCC300DD4856 /* ReaderDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 4521C5AE1360DCC300DD4856 /* ReaderDocument.m */; };
 		452825231434FF9F00744EB2 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 452825221434FF9F00744EB2 /* DirectoryWatcher.m */; };
 		452E1F90161203E600192ED2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 452E1F8F161203E600192ED2 /* README.md */; };
-		452E1F94161203EE00192ED2 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 452E1F92161203EE00192ED2 /* LICENSE.md */; };
+		452E1F94161203EE00192ED2 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 452E1F92161203EE00192ED2 /* LICENSE */; };
 		4552C17513413EB00000C190 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4552C17413413EB00000C190 /* Settings.bundle */; };
 		45550E4F1612086C003F2FAA /* ReaderDocumentOutline.m in Sources */ = {isa = PBXBuildFile; fileRef = 45550E4E1612086C003F2FAA /* ReaderDocumentOutline.m */; };
 		4567BAE01347751600311D51 /* CoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4567BADF1347751600311D51 /* CoreDataManager.m */; };
@@ -326,7 +326,7 @@
 		452825211434FF9F00744EB2 /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryWatcher.h; path = Support/DirectoryWatcher.h; sourceTree = "<group>"; };
 		452825221434FF9F00744EB2 /* DirectoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryWatcher.m; path = Support/DirectoryWatcher.m; sourceTree = "<group>"; };
 		452E1F8F161203E600192ED2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		452E1F92161203EE00192ED2 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
+		452E1F92161203EE00192ED2 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		4552C17413413EB00000C190 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = Resources/Settings.bundle; sourceTree = "<group>"; };
 		45550E4D1612086C003F2FAA /* ReaderDocumentOutline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderDocumentOutline.h; path = Sources/ReaderDocumentOutline.h; sourceTree = "<group>"; };
 		45550E4E1612086C003F2FAA /* ReaderDocumentOutline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderDocumentOutline.m; path = Sources/ReaderDocumentOutline.m; sourceTree = "<group>"; };
@@ -630,7 +630,7 @@
 				0288559317A8C75F004B5CCF /* leaseagreement.pdf */,
 				0288559417A8C75F004B5CCF /* nda.pdf */,
 				452E1F8F161203E600192ED2 /* README.md */,
-				452E1F92161203EE00192ED2 /* LICENSE.md */,
+				452E1F92161203EE00192ED2 /* LICENSE */,
 				8D1107310486CEB800E47090 /* ThatPDF-Info.plist */,
 				45B9423513413C99005AE6DA /* Localizable.strings */,
 				28193054112F811F00ECF9B4 /* Reader.xcdatamodeld */,
@@ -861,7 +861,7 @@
 				45E2B4EC144CC68E00B497D0 /* help.html in Resources */,
 				459D1AD7144CD72600EF4614 /* help.css in Resources */,
 				452E1F90161203E600192ED2 /* README.md in Resources */,
-				452E1F94161203EE00192ED2 /* LICENSE.md in Resources */,
+				452E1F94161203EE00192ED2 /* LICENSE in Resources */,
 				0288558B17A898DE004B5CCF /* FPPicker.bundle in Resources */,
 				0288559517A8C75F004B5CCF /* leaseagreement.pdf in Resources */,
 				0288559617A8C75F004B5CCF /* nda.pdf in Resources */,
