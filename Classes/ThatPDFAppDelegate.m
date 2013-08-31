@@ -148,7 +148,7 @@
     [mainWindow setRootViewController:rootViewController];
     
 	[mainWindow makeKeyAndVisible]; // Make it the key window and visible
-
+    
 	return YES;
 }
 
