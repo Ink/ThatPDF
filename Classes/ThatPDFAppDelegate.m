@@ -115,9 +115,9 @@
     [[INKCoreManager sharedManager] registerAdditionalURLScheme:@"thatpdf"];
 
     //Creating and registering the three actions ThatPDF supports
-    INKAction *view = [INKAction action:@"View" type:INKActionType_View];
-    INKAction *annotate = [INKAction action:@"Annotate" type:INKActionType_Annotate];
-    INKAction *sign = [INKAction action:@"Sign" type:INKActionType_Sign];
+    INKAction *view = [INKAction action:@"View-thatpdf" type:INKActionType_View];
+    INKAction *annotate = [INKAction action:@"Annotate-thatpdf" type:INKActionType_Annotate];
+    INKAction *sign = [INKAction action:@"Sign-pdf" type:INKActionType_Sign];
     
     [Ink registerAction:view withTarget:self selector:@selector(viewBlob:action:error:)];
     [Ink registerAction:annotate withTarget:self selector:@selector(annotateBlob:action:error:)];
