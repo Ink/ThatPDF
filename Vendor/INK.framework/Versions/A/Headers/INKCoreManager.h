@@ -18,7 +18,8 @@
 @property (strong, atomic) NSString *callbackURLScheme;
 @property (readonly,atomic) INKApp *callingApp;
 @property (readonly,atomic) NSString *currentRequestId;
-@property (readonly,atomic) INKBlob *currentBlob;
+@property (readonly, nonatomic) INKBlob *currentBlob;
+@property (readonly, atomic) NSInteger blobChecksum;
 
 // RCOH THIS IS REQUIRED FOR BACKWARDS COMPATIBILITY. REMOVO PRONTO.
 @property (copy,atomic) INKActionCallbackBlock ios6ReturnBlock;
@@ -46,7 +47,6 @@
 
 // Returns whether app was launched via ink and this should return in the corresponding way
 - (BOOL)appShouldReturn;
-
 - (BOOL)canPerformAction:(INKAction*)action;
 
 //Low-level inter-app communication stuff
