@@ -7,6 +7,7 @@
 //
 
 #import "AnnotationViewController.h"
+#import "StandaloneStatsEmitter.h"
 
 NSString *const AnnotationViewControllerType_None = @"None";
 NSString *const AnnotationViewControllerType_Sign = @"Sign";
@@ -235,6 +236,7 @@ CGFloat const TEXT_FIELD_HEIGHT = 32;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [[StandaloneStatsEmitter sharedEmitter] sendStat:@"document_annotated" withAdditionalStatistics:nil];
     UITouch *touch = [touches anyObject];
     lastPoint = [touch locationInView:pageView];
     

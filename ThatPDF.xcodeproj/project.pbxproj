@@ -157,6 +157,7 @@
 		45E2B4E9144CB3A500B497D0 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45E2B4E8144CB3A500B497D0 /* HelpViewController.m */; };
 		45E2B4EC144CC68E00B497D0 /* help.html in Resources */ = {isa = PBXBuildFile; fileRef = 45E2B4EE144CC68E00B497D0 /* help.html */; };
 		45EC70F8134B7B5600862B6D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45EC70F7134B7B5600862B6D /* MessageUI.framework */; };
+		EA24660F17D9A84F009A4619 /* StandaloneStatsEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = EA24660E17D9A84E009A4619 /* StandaloneStatsEmitter.m */; };
 		EA8B72A6179F2AB8003EF80D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8B72A5179F2AB8003EF80D /* CFNetwork.framework */; };
 		EA8B72A8179F2AC0003EF80D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8B72A7179F2AC0003EF80D /* Security.framework */; };
 		EA8B72AA179F2B01003EF80D /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8B72A9179F2B01003EF80D /* libicucore.dylib */; };
@@ -377,6 +378,8 @@
 		45E2B4ED144CC68E00B497D0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = en; path = en.lproj/help.html; sourceTree = "<group>"; };
 		45EC70F7134B7B5600862B6D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* ThatPDF-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ThatPDF-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		EA2465FA17D7FE55009A4619 /* StandaloneStatsEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StandaloneStatsEmitter.h; sourceTree = "<group>"; };
+		EA24660E17D9A84E009A4619 /* StandaloneStatsEmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StandaloneStatsEmitter.m; sourceTree = "<group>"; };
 		EA8B72A5179F2AB8003EF80D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		EA8B72A7179F2AC0003EF80D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		EA8B72A9179F2B01003EF80D /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
@@ -570,6 +573,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EA2465FA17D7FE55009A4619 /* StandaloneStatsEmitter.h */,
+				EA24660E17D9A84E009A4619 /* StandaloneStatsEmitter.m */,
 				1D3623240D0F684500981E51 /* ThatPDFAppDelegate.h */,
 				1D3623250D0F684500981E51 /* ThatPDFAppDelegate.m */,
 				451258FA142B8871009BCAF5 /* LibraryViewController.h */,
@@ -997,6 +1002,7 @@
 				02B51102178DE55E002CC7B2 /* AnnotationViewController.m in Sources */,
 				027DE5F817B9E4AC00BCA4FE /* INKWelcomeViewController.m in Sources */,
 				027DE5FA17B9E4AC00BCA4FE /* PagedScrollView.m in Sources */,
+				EA24660F17D9A84F009A4619 /* StandaloneStatsEmitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -32,6 +32,7 @@
 #import "DocumentFolder.h"
 #import <INK/INK.h>
 #import "INKWelcomeViewController.h"
+#import "StandaloneStatsEmitter.h"
 
 #include <sys/xattr.h>
 
@@ -109,6 +110,8 @@
 
     //Setting up Ink with our App key.
     [Ink setupWithAppKey:@"AffsVXnXNLPDFkRumVoz"];
+    [[StandaloneStatsEmitter sharedEmitter] setAppKey:@"AffsVXnXNLPDFkRumVoz"];
+    [[StandaloneStatsEmitter sharedEmitter] sendStat:@"app_launched" withAdditionalStatistics:nil];
     //XXX - Because we now use the ink-<apikey> url schemes, apps should not need to register
     //additional url schemes that they listen for Ink actions on. This is just for backwards compatibility
     //with the earliest versions of the sample apps, and should be removed asap.
