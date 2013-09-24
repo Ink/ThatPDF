@@ -108,16 +108,12 @@
 	[self prePopulateCoreData]; // Pre-populate Core Data store with various default objects
 
     //Setting up Ink with our App key.
-    [Ink setupWithAppKey:@"AffsVXnXNLPDFkRumVoz"];
-    //XXX - Because we now use the ink-<apikey> url schemes, apps should not need to register
-    //additional url schemes that they listen for Ink actions on. This is just for backwards compatibility
-    //with the earliest versions of the sample apps, and should be removed asap.
-    [[INKCoreManager sharedManager] registerAdditionalURLScheme:@"thatpdf"];
-
+    [Ink setupWithAppKey:@"A651e6fb020c0979ec9z"];
+    
     //Creating and registering the three actions ThatPDF supports
-    INKAction *view = [INKAction action:@"View-thatpdf" type:INKActionType_View];
-    INKAction *annotate = [INKAction action:@"Annotate-thatpdf" type:INKActionType_Annotate];
-    INKAction *sign = [INKAction action:@"Sign-pdf" type:INKActionType_Sign];
+    INKAction *view = [INKAction actionWithUUID:@"93b3184b-4794-4f70-b3f7-017995011de2"];
+    INKAction *annotate = [INKAction actionWithUUID:@"28c55e09-cba1-4eff-9ad5-89d44b9d8c64"];
+    INKAction *sign = [INKAction actionWithUUID:@"21e76a62-e7fb-4cc1-94d5-33cfe37c5886"];
     
     [Ink registerAction:view withTarget:self selector:@selector(viewBlob:action:error:)];
     [Ink registerAction:annotate withTarget:self selector:@selector(annotateBlob:action:error:)];

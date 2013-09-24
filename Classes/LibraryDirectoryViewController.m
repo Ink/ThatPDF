@@ -72,6 +72,9 @@
 
 - (void)showReaderDocument:(ReaderDocument *)document
 {
+    if (![self.navigationController.viewControllers containsObject:documentsViewController]) {
+        [self.navigationController pushViewController:documentsViewController animated:NO];
+    }
     [documentsViewController showReaderDocument:document];
 }
 

@@ -26,8 +26,6 @@
 #import "ReaderConstants.h"
 #import "ReaderViewController.h"
 #import "ThumbsViewController.h"
-#import "ReaderMainToolbar.h"
-#import "ReaderAnnotateToolbar.h"
 #import "ReaderMainPagebar.h"
 #import "ReaderContentView.h"
 #import "ReaderThumbCache.h"
@@ -308,6 +306,8 @@
 			[ReaderThumbCache touchThumbCacheWithGUID:object.guid]; // Touch the document thumb cache directory
 
 			reader = self; // Return an initialized ReaderViewController object
+            
+            self.annotationController = [[AnnotationViewController alloc] initWithDocument:document];
 		}
 	}
     
@@ -380,13 +380,12 @@
 	[self.view addGestureRecognizer:doubleTapOne];
 
 	[singleTapOne requireGestureRecognizerToFail:doubleTapOne]; // Single tap requires double tap to fail
-
-    //Annotation view controller
-    self.annotationController = [[AnnotationViewController alloc] initWithDocument:document];
     
 	contentViews = [NSMutableDictionary new]; lastHideTime = [NSDate date];
     
-    [self setupMainToolbar];
+    if (self.annotationController.annotationType == AnnotationViewControllerType_None) {
+        [self setupMainToolbar];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -760,11 +759,12 @@
 #pragma mark Annotation Flow
 
 - (void) startAnnotation {
-    [self setupAnnotationToolbar];
-    
     ReaderContentView *view = [contentViews objectForKey:document.pageNumber];
     [self.annotationController moveToPage:[document.pageNumber intValue] contentView:view];
     [self.view addSubview:self.annotationController.view];
+    
+    //We do this after self.view so we can make sure our view is loaded
+    [self setupAnnotationToolbar];
 }
 
 - (void) endAnnotation {
@@ -1012,6 +1012,7 @@
             return blob;
         } andOnComplete:^{
             [self endAnnotation];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         }];
     } else {
         [self endAnnotation];

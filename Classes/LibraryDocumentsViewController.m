@@ -93,6 +93,9 @@
 				}
 			}
 
+            if (self.navigationController.visibleViewController == readerViewController) {
+                [self.navigationController popViewControllerAnimated:NO];
+            }
 			readerViewController = nil; // Release any old ReaderViewController first
 
 			readerViewController = [[ReaderViewController alloc] initWithReaderDocument:document];
@@ -113,8 +116,6 @@
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))
 	{
 		NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
-		[notificationCenter addObserver:self selector:@selector(openNewDocument:) name:DocumentsUpdateOpenNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(foldersWhereDeleted:) name:DocumentFoldersDeletedNotification object:nil];
         
 		[notificationCenter addObserver:self selector:@selector(folderWasDeleted:) name:DocumentFolderDeletedNotification object:nil];
@@ -313,35 +314,6 @@
 	[documentsView refreshRecentDocuments]; // Refresh if recent folder is visible
 }
 
-#pragma mark Notification observer methods
-
-- (void)openNewDocument:(NSNotification *)notification
-{
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults]; // User defaults
-
-	NSString *documentURL = [userDefaults objectForKey:kReaderSettingsCurrentDocument]; // Document
-
-	if (documentURL != nil) // Show default document saved in user defaults
-	{
-		NSURL *documentURI = [NSURL URLWithString:documentURL]; // Document URI
-
-		NSManagedObjectContext *mainMOC = [[CoreDataManager sharedInstance] mainManagedObjectContext];
-
-		NSPersistentStoreCoordinator *mainPSC = [mainMOC persistentStoreCoordinator]; // Main PSC
-
-		NSManagedObjectID *objectID = [mainPSC managedObjectIDForURIRepresentation:documentURI];
-
-		if (objectID != nil) // We have a valid NSManagedObjectID to request a fetch of
-		{
-			ReaderDocument *document = (id)[mainMOC existingObjectWithID:objectID error:NULL];
-
-			if ((document != nil) && ([document isKindOfClass:[ReaderDocument class]]))
-			{
-				[self showReaderDocument:document]; // Show the document
-			}
-		}
-	}
-}
 
 #pragma mark Toolbar methods
 - (void)setupToolbar {

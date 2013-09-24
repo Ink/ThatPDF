@@ -39,7 +39,6 @@
 		0288559517A8C75F004B5CCF /* leaseagreement.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 0288559317A8C75F004B5CCF /* leaseagreement.pdf */; };
 		0288559617A8C75F004B5CCF /* nda.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 0288559417A8C75F004B5CCF /* nda.pdf */; };
 		029B996F17F103F70024B8CF /* LibraryDocumentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 029B996E17F103F70024B8CF /* LibraryDocumentsViewController.m */; };
-		02B510FF178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */; };
 		02B51102178DE55E002CC7B2 /* AnnotationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02B51101178DE55E002CC7B2 /* AnnotationViewController.m */; };
 		02D6AE8217A27DAB0044ACF7 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02D6AE8117A27DAB0044ACF7 /* QuickLook.framework */; };
 		02D6AE8417A27DB10044ACF7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02D6AE8317A27DB10044ACF7 /* SystemConfiguration.framework */; };
@@ -145,7 +144,6 @@
 		458D3A24142A580F00F15953 /* ReaderContentTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A00142A580F00F15953 /* ReaderContentTile.m */; };
 		458D3A25142A580F00F15953 /* ReaderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A02142A580F00F15953 /* ReaderContentView.m */; };
 		458D3A27142A580F00F15953 /* ReaderMainPagebar.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A06142A580F00F15953 /* ReaderMainPagebar.m */; };
-		458D3A28142A580F00F15953 /* ReaderMainToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A08142A580F00F15953 /* ReaderMainToolbar.m */; };
 		458D3A2A142A580F00F15953 /* ReaderThumbCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A0C142A580F00F15953 /* ReaderThumbCache.m */; };
 		458D3A2B142A580F00F15953 /* ReaderThumbFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A0E142A580F00F15953 /* ReaderThumbFetch.m */; };
 		458D3A2C142A580F00F15953 /* ReaderThumbQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 458D3A10142A580F00F15953 /* ReaderThumbQueue.m */; };
@@ -227,8 +225,6 @@
 		0288559417A8C75F004B5CCF /* nda.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = nda.pdf; path = Resources/nda.pdf; sourceTree = "<group>"; };
 		029B996D17F103F70024B8CF /* LibraryDocumentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDocumentsViewController.h; sourceTree = "<group>"; };
 		029B996E17F103F70024B8CF /* LibraryDocumentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryDocumentsViewController.m; sourceTree = "<group>"; };
-		02B510FD178DDD8D002CC7B2 /* ReaderAnnotateToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderAnnotateToolbar.h; path = Sources/ReaderAnnotateToolbar.h; sourceTree = "<group>"; };
-		02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderAnnotateToolbar.m; path = Sources/ReaderAnnotateToolbar.m; sourceTree = "<group>"; };
 		02B51100178DE55E002CC7B2 /* AnnotationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotationViewController.h; path = Sources/AnnotationViewController.h; sourceTree = "<group>"; };
 		02B51101178DE55E002CC7B2 /* AnnotationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotationViewController.m; path = Sources/AnnotationViewController.m; sourceTree = "<group>"; };
 		02D6AE8117A27DAB0044ACF7 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
@@ -357,8 +353,6 @@
 		458D3A02142A580F00F15953 /* ReaderContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderContentView.m; path = Sources/ReaderContentView.m; sourceTree = "<group>"; };
 		458D3A05142A580F00F15953 /* ReaderMainPagebar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderMainPagebar.h; path = Sources/ReaderMainPagebar.h; sourceTree = "<group>"; };
 		458D3A06142A580F00F15953 /* ReaderMainPagebar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderMainPagebar.m; path = Sources/ReaderMainPagebar.m; sourceTree = "<group>"; };
-		458D3A07142A580F00F15953 /* ReaderMainToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderMainToolbar.h; path = Sources/ReaderMainToolbar.h; sourceTree = "<group>"; };
-		458D3A08142A580F00F15953 /* ReaderMainToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderMainToolbar.m; path = Sources/ReaderMainToolbar.m; sourceTree = "<group>"; };
 		458D3A0B142A580F00F15953 /* ReaderThumbCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderThumbCache.h; path = Sources/ReaderThumbCache.h; sourceTree = "<group>"; };
 		458D3A0C142A580F00F15953 /* ReaderThumbCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReaderThumbCache.m; path = Sources/ReaderThumbCache.m; sourceTree = "<group>"; };
 		458D3A0D142A580F00F15953 /* ReaderThumbFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderThumbFetch.h; path = Sources/ReaderThumbFetch.h; sourceTree = "<group>"; };
@@ -569,8 +563,6 @@
 		02E96E2E17C557D200969697 /* Annotations */ = {
 			isa = PBXGroup;
 			children = (
-				02B510FD178DDD8D002CC7B2 /* ReaderAnnotateToolbar.h */,
-				02B510FE178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m */,
 				02EFF259178D0C2A009D04B4 /* AnnotationStore.h */,
 				02EFF25A178D0C2A009D04B4 /* AnnotationStore.m */,
 				02FDF8E2178D1E12004FA109 /* Annotation.h */,
@@ -747,8 +739,6 @@
 				458D39FC142A580F00F15953 /* ReaderConstants.m */,
 				458D3A19142A580F00F15953 /* ReaderViewController.h */,
 				458D3A1A142A580F00F15953 /* ReaderViewController.m */,
-				458D3A07142A580F00F15953 /* ReaderMainToolbar.h */,
-				458D3A08142A580F00F15953 /* ReaderMainToolbar.m */,
 				458D3A05142A580F00F15953 /* ReaderMainPagebar.h */,
 				458D3A06142A580F00F15953 /* ReaderMainPagebar.m */,
 				458D3A01142A580F00F15953 /* ReaderContentView.h */,
@@ -990,7 +980,6 @@
 				458D3A24142A580F00F15953 /* ReaderContentTile.m in Sources */,
 				458D3A25142A580F00F15953 /* ReaderContentView.m in Sources */,
 				458D3A27142A580F00F15953 /* ReaderMainPagebar.m in Sources */,
-				458D3A28142A580F00F15953 /* ReaderMainToolbar.m in Sources */,
 				458D3A2A142A580F00F15953 /* ReaderThumbCache.m in Sources */,
 				458D3A2B142A580F00F15953 /* ReaderThumbFetch.m in Sources */,
 				458D3A2C142A580F00F15953 /* ReaderThumbQueue.m in Sources */,
@@ -1013,7 +1002,6 @@
 				45550E4F1612086C003F2FAA /* ReaderDocumentOutline.m in Sources */,
 				02EFF25B178D0C2A009D04B4 /* AnnotationStore.m in Sources */,
 				02FDF8E4178D1E12004FA109 /* Annotation.m in Sources */,
-				02B510FF178DDD8D002CC7B2 /* ReaderAnnotateToolbar.m in Sources */,
 				02B51102178DE55E002CC7B2 /* AnnotationViewController.m in Sources */,
 				027DE5F817B9E4AC00BCA4FE /* INKWelcomeViewController.m in Sources */,
 				027DE5FA17B9E4AC00BCA4FE /* PagedScrollView.m in Sources */,
