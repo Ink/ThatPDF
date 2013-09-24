@@ -18,6 +18,9 @@ FOUNDATION_EXPORT uint32_t const  kINKActionNotSupported;
 // You should never see this error.
 FOUNDATION_EXPORT uint32_t const  kINKInvalidURLFormat;
 
+// kINKUserCanceledAction indicates that the user cancelled the action that they were taking in the receiving app.
+FOUNDATION_EXPORT uint32_t const  kINKUserCanceledAction;
+
 @interface INKErrors : NSObject
 
 @end

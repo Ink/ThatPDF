@@ -36,11 +36,9 @@
 
 @required // Delegate protocols
 
-- (void)tappedInToolbar:(UIXToolbarView *)toolbar addFileButton:(UIButton *)button;
-
 - (void)documentsView:(LibraryDocumentsView *)documentsView didSelectReaderDocument:(ReaderDocument *)document;
 
-- (void)enableContainerScrollView:(BOOL)enabled;
+- (void)updateButtonStatesForEditMode:(BOOL)editMode countSelected:(NSInteger)selected;
 
 @end
 
@@ -50,6 +48,8 @@
 
 @property (nonatomic, unsafe_unretained, readwrite) UIViewController *ownViewController;
 
+@property (atomic) BOOL editMode;
+
 - (void)reloadDocumentsUpdated;
 
 - (void)reloadDocumentsWithFolder:(DocumentFolder *)folder;
@@ -57,6 +57,14 @@
 - (void)refreshRecentDocuments;
 
 - (void)handleMemoryWarning;
+
+- (void)toggleEditMode;
+
+- (void)presentRenameAlert;
+
+- (void)presentDeleteAlert;
+
+- (void) presentFolderViewController;
 
 @end
 

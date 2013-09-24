@@ -38,7 +38,7 @@
 #import <INK/INK.h>
 
 @interface ReaderViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate,
-									ReaderMainToolbarDelegate, ReaderAnnotateToolbarDelegate, ReaderMainPagebarDelegate, ReaderContentViewDelegate, ThumbsViewControllerDelegate>
+									ReaderMainPagebarDelegate, ReaderContentViewDelegate, ThumbsViewControllerDelegate, UIAlertViewDelegate>
 @end
 
 @implementation ReaderViewController
@@ -46,10 +46,6 @@
 	ReaderDocument *document;
 
 	UIScrollView *theScrollView;
-
-	ReaderMainToolbar *mainToolbar;
-    
-    ReaderAnnotateToolbar *annotateToolbar;
 
 	ReaderMainPagebar *mainPagebar;
 
@@ -64,14 +60,18 @@
 	NSDate *lastHideTime;
 
 	BOOL isVisible;
+    
+    UIBarButtonItem *signButton;
+    UIBarButtonItem *redPenButton;
+    UIBarButtonItem *textButton;
 }
 
 #pragma mark Constants
 
 #define PAGING_VIEWS 3
 
-#define TOOLBAR_HEIGHT 44.0f
-#define PAGEBAR_HEIGHT 48.0f
+#define TOOLBAR_HEIGHT 60.0f
+#define PAGEBAR_HEIGHT 60.0f
 
 #define TAP_AREA_SIZE 48.0f
 
@@ -133,15 +133,6 @@
 	{
 		theScrollView.contentOffset = contentOffset; // Update content offset
 	}
-}
-
-- (void)updateToolbarBookmarkIcon
-{
-	NSInteger page = [document.pageNumber integerValue];
-
-	BOOL bookmarked = [document.bookmarks containsIndex:page];
-
-	[mainToolbar setBookmarkState:bookmarked]; // Update
 }
 
 - (void)showDocumentPage:(NSInteger)page
@@ -271,9 +262,7 @@
 		newPageSet = nil; // Release new page set
 
 		[mainPagebar updatePagebar]; // Update the pagebar display
-
-		[self updateToolbarBookmarkIcon]; // Update bookmark
-
+        
 		currentPage = page; // Track current page number
         
         //Updating annotations
@@ -368,22 +357,10 @@
     }];
 	[self.view addSubview:theScrollView];
 
-	CGRect toolbarRect = viewRect;
-	toolbarRect.size.height = TOOLBAR_HEIGHT;
-
-	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document]; // At top
-
-	mainToolbar.delegate = self;
-
-	[self.view addSubview:mainToolbar];
+    self.navigationItem.title = [document.fileName stringByDeletingPathExtension];
+    self.navigationItem.backBarButtonItem.title = @"Library";
+    self.navigationItem.hidesBackButton = NO;
     
-    annotateToolbar = [[ReaderAnnotateToolbar alloc] initWithFrame:toolbarRect]; // At top for annotating
-    
-	annotateToolbar.delegate = self;
-    //hidden by default
-    annotateToolbar.hidden = YES;
-	[self.view addSubview:annotateToolbar];
-
 	CGRect pagebarRect = viewRect;
 	pagebarRect.size.height = PAGEBAR_HEIGHT;
 	pagebarRect.origin.y = (viewRect.size.height - PAGEBAR_HEIGHT);
@@ -408,6 +385,8 @@
     self.annotationController = [[AnnotationViewController alloc] initWithDocument:document];
     
 	contentViews = [NSMutableDictionary new]; lastHideTime = [NSDate date];
+    
+    [self setupMainToolbar];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -465,7 +444,7 @@
 	NSLog(@"%s", __FUNCTION__);
 #endif
 
-	mainToolbar = nil; annotateToolbar = nil; mainPagebar = nil;
+	mainPagebar = nil;
 
 	theScrollView = nil; contentViews = nil; lastHideTime = nil;
 
@@ -663,9 +642,9 @@
 			{
 				if ([lastHideTime timeIntervalSinceNow] < -0.75) // Delay since hide
 				{
-					if ((mainToolbar.hidden == YES) || (mainPagebar.hidden == YES))
+					if ((mainPagebar.hidden == YES))
 					{
-						[mainToolbar showToolbar]; [mainPagebar showPagebar]; // Show
+						[mainPagebar showPagebar]; // Show
 					}
 				}
 			}
@@ -749,7 +728,7 @@
 
 - (void)contentView:(ReaderContentView *)contentView touchesBegan:(NSSet *)touches
 {
-	if ((mainToolbar.hidden == NO) || (mainPagebar.hidden == NO))
+	if ((mainPagebar.hidden == NO))
 	{
 		if (touches.count == 1) // Single touches only
 		{
@@ -762,311 +741,44 @@
 			if (CGRectContainsPoint(areaRect, point) == false) return;
 		}
 
-		[mainToolbar hideToolbar]; [mainPagebar hidePagebar]; // Hide
+		[mainPagebar hidePagebar]; // Hide
 
 		lastHideTime = [NSDate date];
 	}
 }
 
-#pragma mark ReaderMainToolbarDelegate methods
-
-- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar libraryButton:(UIButton *)button
-{
-#if (READER_STANDALONE == FALSE) // Option
-
-    dispatch_queue_t defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(defaultQueue, ^{
-        [document saveReaderDocumentWithAnnotations]; // Save any ReaderDocument object changes
-        document.password = nil; // Clear out any document password
-        
-    });
-    
-	[[ReaderThumbQueue sharedInstance] cancelOperationsWithGUID:document.guid];
-
-	//[[ReaderThumbCache sharedInstance] removeAllObjects]; // Empty the thumb cache
-
-    if ([delegate respondsToSelector:@selector(dismissReaderViewController:)] == YES)
-    {
-        [delegate dismissReaderViewController:self]; // Dismiss the ReaderViewController
+#pragma mark UIAlertViewDelegate methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    //For confirming cancel
+    if (buttonIndex == 1) {
+        [alertView dismissWithClickedButtonIndex:1 animated:YES];
+        [self endAnnotation];
+        [Ink cancelAndReturn];
     }
-    else // We have a "Delegate must respond to -dismissReaderViewController: error"
-    {
-        NSAssert(NO, @"Delegate must respond to -dismissReaderViewController:");
-    }
-    
-
-#endif // end of READER_STANDALONE Option
-}
-
-- (void) tappedInToolbar:(ReaderMainToolbar *)toolbar inkButton:(UIButton *)button {
-    [Ink showWorkspaceWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
-        INKBlob *blob = [INKBlob blobFromLocalFile:[ReaderDocument urlForAnnotatedDocument:document]];
-        blob.filename = document.fileName;
-        blob.uti = @"com.adobe.pdf";
-        return blob;
-    } onReturn:^(INKBlob *result, INKAction *action, NSError *error) {
-        if ([action.type isEqualToString:INKActionType_ReturnCancel]) {
-            return;
-        }
-        //else save
-        if (result) {
-            [result.data writeToFile:document.filePath atomically:YES];
-        }
-    }];
-}
-
-- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar thumbsButton:(UIButton *)button
-{
-	if (printInteraction != nil) [printInteraction dismissAnimated:NO]; // Dismiss
-
-	ThumbsViewController *thumbsViewController = [[ThumbsViewController alloc] initWithReaderDocument:document];
-
-	thumbsViewController.delegate = self; thumbsViewController.title = self.title;
-
-	thumbsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-	thumbsViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-
-	[self presentViewController:thumbsViewController animated:NO completion:^{}];
-}
-
-- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar printButton:(UIButton *)button
-{
-#if (READER_ENABLE_PRINT == TRUE) // Option
-
-	Class printInteractionController = NSClassFromString(@"UIPrintInteractionController");
-
-	if ((printInteractionController != nil) && [printInteractionController isPrintingAvailable])
-	{
-		NSURL *fileURL = document.fileURL; // Document file URL
-
-		printInteraction = [printInteractionController sharedPrintController];
-
-		if ([printInteractionController canPrintURL:fileURL] == YES) // Check first
-		{
-			UIPrintInfo *printInfo = [NSClassFromString(@"UIPrintInfo") printInfo];
-
-			printInfo.duplex = UIPrintInfoDuplexLongEdge;
-			printInfo.outputType = UIPrintInfoOutputGeneral;
-			printInfo.jobName = document.fileName;
-
-			printInteraction.printInfo = printInfo;
-			printInteraction.printingItem = fileURL;
-			printInteraction.showsPageRange = YES;
-
-			if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-			{
-				[printInteraction presentFromRect:button.bounds inView:button animated:YES completionHandler:
-					^(UIPrintInteractionController *pic, BOOL completed, NSError *error)
-					{
-						#ifdef DEBUG
-							if ((completed == NO) && (error != nil)) NSLog(@"%s %@", __FUNCTION__, error);
-						#endif
-					}
-				];
-			}
-			else // Presume UIUserInterfaceIdiomPhone
-			{
-				[printInteraction presentAnimated:YES completionHandler:
-					^(UIPrintInteractionController *pic, BOOL completed, NSError *error)
-					{
-						#ifdef DEBUG
-							if ((completed == NO) && (error != nil)) NSLog(@"%s %@", __FUNCTION__, error);
-						#endif
-					}
-				];
-			}
-		}
-	}
-
-#endif // end of READER_ENABLE_PRINT Option
-}
-
-- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar emailButton:(UIButton *)button
-{
-#if (READER_ENABLE_MAIL == TRUE) // Option
-
-	if ([MFMailComposeViewController canSendMail] == NO) return;
-
-	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
-
-	unsigned long long fileSize = [document.fileSize unsignedLongLongValue];
-
-	if (fileSize < (unsigned long long)15728640) // Check attachment size limit (15MB)
-	{
-        //Draws the annotations onto the document and saves it as a copy in tmp
-		NSURL *fileURL = [ReaderDocument urlForAnnotatedDocument:document];
-        
-        NSString *fileName = document.fileName; // Document
-        
-		NSData *attachment = [NSData dataWithContentsOfURL:fileURL options:(NSDataReadingMapped|NSDataReadingUncached) error:nil];
-
-		if (attachment != nil) // Ensure that we have valid document file attachment data
-		{
-			MFMailComposeViewController *mailComposer = [MFMailComposeViewController new];
-
-			[mailComposer addAttachmentData:attachment mimeType:@"application/pdf" fileName:fileName];
-
-			[mailComposer setSubject:fileName]; // Use the document file name for the subject
-
-			mailComposer.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-			mailComposer.modalPresentationStyle = UIModalPresentationFormSheet;
-
-			mailComposer.mailComposeDelegate = self; // Set the delegate
-
-			[self presentModalViewController:mailComposer animated:YES];
-		}
-	}
-
-#endif // end of READER_ENABLE_MAIL Option
-}
-
-- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar annotateButton:(UIButton *)button
-{
-    [self setAnnotationMode:AnnotationViewControllerType_None];
-    [self startAnnotation];
-}
-
-- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar markButton:(UIButton *)button
-{
-	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
-
-	NSInteger page = [document.pageNumber integerValue];
-
-	if ([document.bookmarks containsIndex:page]) // Remove bookmark
-	{
-		[mainToolbar setBookmarkState:NO]; [document.bookmarks removeIndex:page];
-	}
-	else // Add the bookmarked page index to the bookmarks set
-	{
-		[mainToolbar setBookmarkState:YES]; [document.bookmarks addIndex:page];
-	}
-}
-
-#pragma mark ReaderAnnotateToolbarDelegate methods
-
-
-- (void) setAnnotationMode:(NSString*)mode {
-    [annotateToolbar setSignButtonState:NO];
-    [annotateToolbar setRedPenButtonState:NO];
-    [annotateToolbar setTextButtonState:NO];
-    
-    if ([mode isEqualToString:AnnotationViewControllerType_Sign]) {
-        [annotateToolbar setSignButtonState:YES];
-    } else if ([mode isEqualToString:AnnotationViewControllerType_RedPen]) {
-        [annotateToolbar setRedPenButtonState:YES];
-    } else if ([mode isEqualToString:AnnotationViewControllerType_Text]) {
-        [annotateToolbar setTextButtonState:YES];
-    }
-    
-    self.annotationController.annotationType = mode;
-}
-
-- (void)tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar signButton:(UIButton *)button
-{
-    if ([self.annotationController.annotationType isEqualToString:AnnotationViewControllerType_Sign]) {
-        [self setAnnotationMode:AnnotationViewControllerType_None];
-    } else {
-        [self setAnnotationMode:AnnotationViewControllerType_Sign];
-    }
-}
-
-- (void)tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar redPenButton:(UIButton *)button
-{
-    if ([self.annotationController.annotationType isEqualToString:AnnotationViewControllerType_RedPen]) {
-        [self setAnnotationMode:AnnotationViewControllerType_None];
-    } else {
-        [self setAnnotationMode:AnnotationViewControllerType_RedPen];
-    }
-}
-
-- (void)tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar textButton:(UIButton *)button
-{
-    if ([self.annotationController.annotationType isEqualToString:AnnotationViewControllerType_Text]) {
-        [self setAnnotationMode:AnnotationViewControllerType_None];
-    } else {
-        [self setAnnotationMode:AnnotationViewControllerType_Text];
-    }
-}
-
-- (void) tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar cancelButton:(UIButton *)button {
-    [self cancelAnnotation];
-    
-    //If we're in an Ink workflow, we don't want to return them to the document - instead, we want to bring
-    //up Ink
-    if ([Ink appShouldReturn]) {
-        document.password = nil; // Clear out any document password
-        [[ReaderThumbQueue sharedInstance] cancelOperationsWithGUID:document.guid];
-        
-        //Create a blob from the local data. This will auto-set the filename and uti from the file name/extension,
-        //but we overwrite because we have better info
-        INKBlob *blob = [INKBlob blobFromLocalFile:document.fileURL];
-        blob.filename = document.fileName;
-        //We always have PDFs
-        blob.uti = @"com.adobe.pdf";
-        
-        //Launches the Ink workspace to return the given data
-        [Ink returnBlob:blob];
-    }
-}
-
-- (void) tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar doneButton:(UIButton *)button {
-    [self finishAnnotation];
-    
-    //If we're in an Ink workflow, we don't want to return them to the document - instead, we want to bring
-    //up Ink
-    if ([Ink appShouldReturn]) {
-        [[ReaderThumbQueue sharedInstance] cancelOperationsWithGUID:document.guid];
-        
-        //We show the workspace dynamically so that we can redner the annotations into the PDF
-        //in a non-blocking fashion.
-        [Ink showWorkspaceWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
-            [document saveReaderDocumentWithAnnotations]; // Save any ReaderDocument object changes
-            document.password = nil; // Clear out any document password
-            
-            INKBlob *blob = [INKBlob blobFromLocalFile:document.fileURL];
-            
-            blob.filename = document.fileName;
-            blob.uti = @"com.adobe.pdf";
-            return blob;
-        }];
-    }
-}
-
-- (void)tappedInAnnotateToolbar:(ReaderAnnotateToolbar *)toolbar undoButton:(UIButton *)button {
-    [self.annotationController undo];
 }
 
 #pragma mark Annotation Flow
 
 - (void) startAnnotation {
-    [annotateToolbar showToolbar];
-    [mainToolbar hideToolbar];
+    [self setupAnnotationToolbar];
     
     ReaderContentView *view = [contentViews objectForKey:document.pageNumber];
     [self.annotationController moveToPage:[document.pageNumber intValue] contentView:view];
-    [self.view insertSubview:self.annotationController.view belowSubview:annotateToolbar];
+    [self.view addSubview:self.annotationController.view];
 }
 
-- (void) cancelAnnotation {
-    [annotateToolbar hideToolbar];
-    [mainToolbar showToolbar];
+- (void) endAnnotation {
+    [self setupMainToolbar];
     
     [self.annotationController clear];
     [self.annotationController hide];
 }
 
-- (void) finishAnnotation {
-    [annotateToolbar hideToolbar];
-    [mainToolbar showToolbar];
-
+- (void) saveAnnotations {
     AnnotationStore *annotations = [self.annotationController annotations];
     [document.annotations addAnnotations:annotations];
     ReaderContentView *view = [contentViews objectForKey:document.pageNumber];
     [[view contentView] setNeedsDisplay];
-    
-    [self.annotationController clear];
-    [self.annotationController hide];
-
 }
 
 - (void)handleAnnotationModeNotification:(NSNotification *)notification
@@ -1080,7 +792,7 @@
         [self setAnnotationMode:AnnotationViewControllerType_RedPen];
     }
     if ([notification.name isEqualToString:DocumentsSetAnnotationModeOffNotification]) {
-        [self cancelAnnotation];
+        [self endAnnotation];
         [self setAnnotationMode:AnnotationViewControllerType_None];
     }
 }
@@ -1102,8 +814,6 @@
 
 - (void)dismissThumbsViewController:(ThumbsViewController *)viewController
 {
-	[self updateToolbarBookmarkIcon]; // Update bookmark icon
-
 	[self dismissViewControllerAnimated:NO completion:^{
         
     }]; // Dismiss
@@ -1131,6 +841,210 @@
 	{
 		if (printInteraction != nil) [printInteraction dismissAnimated:NO];
 	}
+}
+
+#pragma mark MainToolbar
+- (void) setupMainToolbar {
+    UIBarButtonItem *thumbsButton = [[UIBarButtonItem alloc]
+                                     initWithImage:[UIImage imageNamed:@"Reader-Thumbs"]
+                                     style:UIBarButtonItemStylePlain
+                                     target:self action:@selector(thumbsButtonTapped:)];
+    UIBarButtonItem *inkButton = [[UIBarButtonItem alloc]
+                                  initWithImage:[UIImage imageNamed:@"InkBlack"]
+                                  style:UIBarButtonItemStylePlain
+                                  target:self action:@selector(inkButtonTapped:)];
+    
+    UIBarButtonItem *annotateButton = [[UIBarButtonItem alloc]
+                                       initWithImage:[UIImage imageNamed:@"Reader-Annotate"]
+                                       style:UIBarButtonItemStylePlain
+                                       target:self action:@selector(annotateButtonTapped:)];
+    
+    self.navigationItem.title = [document.fileName stringByDeletingPathExtension];
+    
+    self.navigationItem.leftItemsSupplementBackButton = YES;
+    self.navigationItem.hidesBackButton = NO;
+    [self.navigationItem setLeftBarButtonItem:thumbsButton animated:YES];
+    [self.navigationItem setRightBarButtonItems:@[inkButton, annotateButton] animated:YES];
+}
+
+#pragma mark Reader main toolbar methods
+
+- (void)inkButtonTapped:(id)button
+{
+    [Ink showWorkspaceWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
+        INKBlob *blob = [INKBlob blobFromLocalFile:[ReaderDocument urlForAnnotatedDocument:document]];
+        blob.filename = document.fileName;
+        blob.uti = @"com.adobe.pdf";
+        return blob;
+    } onReturn:^(INKBlob *result, INKAction *action, NSError *error) {
+        if ([action.type isEqualToString:INKActionType_ReturnCancel]) {
+            return;
+        }
+        //else save
+        if (result) {
+            [result.data writeToFile:document.filePath atomically:YES];
+        }
+    }];
+}
+
+- (void)thumbsButtonTapped:(id)button
+{
+	if (printInteraction != nil) [printInteraction dismissAnimated:NO]; // Dismiss
+    
+	ThumbsViewController *thumbsViewController = [[ThumbsViewController alloc] initWithReaderDocument:document];
+    
+	thumbsViewController.delegate = self; thumbsViewController.title = self.title;
+    
+	thumbsViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+	thumbsViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    
+    [self.navigationController pushViewController:thumbsViewController animated:NO];
+}
+
+- (void)annotateButtonTapped:(id)button
+{
+    [self setAnnotationMode:AnnotationViewControllerType_None];
+    [self startAnnotation];
+}
+
+#pragma mark AnnotationToolbar
+- (void) setupAnnotationToolbar {
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self action:@selector(annotateBackButtonTapped:)];
+    if ([Ink appShouldReturn]) {
+        backButton.title = @"Back";
+    }
+    
+    UIBarButtonItem *undoButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo
+                                                                                target:self action:@selector(annotateUndoButtonTapped:)];
+
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                  style:UIBarButtonItemStyleDone
+                                                                 target:self action:@selector(annotateDoneButtonTapped:)];
+    
+    signButton = [[UIBarButtonItem alloc]
+                                       initWithImage:[UIImage imageNamed:@"Reader-Sign"]
+                                       style:UIBarButtonItemStylePlain
+                                       target:self action:@selector(annotateSignButtonTapped:)];
+    
+    redPenButton = [[UIBarButtonItem alloc]
+                                   initWithImage:[UIImage imageNamed:@"Reader-RedPen"]
+                                   style:UIBarButtonItemStylePlain
+                                   target:self action:@selector(annotateRedPenButtonTapped:)];
+    
+    textButton = [[UIBarButtonItem alloc]
+                                     initWithImage:[UIImage imageNamed:@"Reader-Text"]
+                                     style:UIBarButtonItemStylePlain
+                                     target:self action:@selector(annotateTextButtonTapped:)];
+    
+    self.navigationItem.title = @"Add annotations";
+
+    [self.navigationItem setRightBarButtonItems:@[doneButton, signButton, redPenButton, textButton, undoButton] animated:YES];
+    self.navigationItem.hidesBackButton = YES;
+    [self.navigationItem setLeftBarButtonItem:backButton];
+}
+
+- (void) setSignButtonState:(BOOL)state {
+    signButton.tintColor = state ? [UIColor blackColor] : nil;
+}
+
+- (void) setRedPenButtonState:(BOOL)state {
+    redPenButton.tintColor = state ? [UIColor redColor] : nil;
+}
+
+- (void) setTextButtonState:(BOOL)state {
+    textButton.tintColor = state ? [UIColor blackColor] : nil;
+}
+
+- (void) setAnnotationMode:(NSString*)mode {
+    [self setSignButtonState:NO];
+    [self setRedPenButtonState:NO];
+    [self setTextButtonState:NO];
+    
+    if ([mode isEqualToString:AnnotationViewControllerType_Sign]) {
+        [self setSignButtonState:YES];
+    } else if ([mode isEqualToString:AnnotationViewControllerType_RedPen]) {
+        [self setRedPenButtonState:YES];
+    } else if ([mode isEqualToString:AnnotationViewControllerType_Text]) {
+        [self setTextButtonState:YES];
+    }
+    
+    self.annotationController.annotationType = mode;
+}
+
+- (void) annotateBackButtonTapped:(UIBarButtonItem*)sender {
+    if ([Ink appShouldReturn]) {
+        AnnotationStore *annotations = [self.annotationController annotations];
+        if ([annotations totalNumberOfAnnotations] > 0) {
+            NSString* appName = [Ink callingApp].name;
+            NSString* msg = [NSString stringWithFormat:@"Are you sure you want to discard all changes and return to %@", appName];
+            NSString* returnButton = [NSString stringWithFormat:@"Return to %@", appName];
+            UIAlertView *view = [[UIAlertView alloc] initWithTitle:@"Discard changes?" message:msg delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:returnButton, nil];
+            [view show];
+        } else {
+            [self endAnnotation];
+            [Ink cancelAndReturn];
+        }
+    } else {
+        [self endAnnotation];
+    }
+}
+
+- (void) annotateDoneButtonTapped:(UIBarButtonItem*)sender {
+    //If we're in an Ink workflow, we don't want to return them to the document - instead, we want to bring
+    //up Ink
+    [self saveAnnotations];
+    
+    if ([Ink appShouldReturn]) {
+        [[ReaderThumbQueue sharedInstance] cancelOperationsWithGUID:document.guid];
+        
+        //We show the workspace dynamically so that we can redner the annotations into the PDF
+        //in a non-blocking fashion.
+        [Ink showWorkspaceToReturnWithUTI:@"com.adobe.pdf" dynamicBlob:^INKBlob *{
+            [document saveReaderDocumentWithAnnotations]; // Save any ReaderDocument object changes
+            document.password = nil; // Clear out any document password
+            
+            INKBlob *blob = [INKBlob blobFromLocalFile:document.fileURL];
+            
+            blob.filename = document.fileName;
+            blob.uti = @"com.adobe.pdf";
+            return blob;
+        } andOnComplete:^{
+            [self endAnnotation];
+        }];
+    } else {
+        [self endAnnotation];
+    }
+}
+
+- (void) annotateUndoButtonTapped:(UIBarButtonItem*)sender {
+    [self.annotationController undo];
+}
+
+
+- (void) annotateSignButtonTapped:(UIBarButtonItem*)sender {
+    if ([self.annotationController.annotationType isEqualToString:AnnotationViewControllerType_Sign]) {
+        [self setAnnotationMode:AnnotationViewControllerType_None];
+    } else {
+        [self setAnnotationMode:AnnotationViewControllerType_Sign];
+    }
+}
+
+- (void) annotateRedPenButtonTapped:(UIBarButtonItem*)sender {
+    if ([self.annotationController.annotationType isEqualToString:AnnotationViewControllerType_RedPen]) {
+        [self setAnnotationMode:AnnotationViewControllerType_None];
+    } else {
+        [self setAnnotationMode:AnnotationViewControllerType_RedPen];
+    }
+}
+
+- (void) annotateTextButtonTapped:(UIBarButtonItem*)sender {
+    if ([self.annotationController.annotationType isEqualToString:AnnotationViewControllerType_Text]) {
+        [self setAnnotationMode:AnnotationViewControllerType_None];
+    } else {
+        [self setAnnotationMode:AnnotationViewControllerType_Text];
+    }
 }
 
 @end

@@ -25,5 +25,6 @@
 - (void) drawAnnotationsForPage:(int)page inContext:(CGContextRef) context;
 
 - (void)empty;
+- (NSInteger) totalNumberOfAnnotations;
 
 @end

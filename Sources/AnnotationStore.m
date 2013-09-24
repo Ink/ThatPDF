@@ -94,4 +94,12 @@
     }
 }
 
+- (NSInteger) totalNumberOfAnnotations {
+    NSInteger count = 0;
+    for (NSArray *pageAnnotations in annotations) {
+        count += [pageAnnotations count];
+    }
+    return count;
+}
+
 @end

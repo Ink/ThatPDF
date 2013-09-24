@@ -31,15 +31,13 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-@interface ThumbsViewController () <ThumbsMainToolbarDelegate, ReaderThumbsViewDelegate>
+@interface ThumbsViewController () <ReaderThumbsViewDelegate>
 
 @end
 
 @implementation ThumbsViewController
 {
 	ReaderDocument *document;
-
-	ThumbsMainToolbar *mainToolbar;
 
 	ReaderThumbsView *theThumbsView;
 
@@ -54,7 +52,7 @@
 
 #pragma mark Constants
 
-#define TOOLBAR_HEIGHT 44.0f
+#define TOOLBAR_HEIGHT 0
 
 #define PAGE_THUMB_SMALL 160
 #define PAGE_THUMB_LARGE 256
@@ -96,13 +94,7 @@
 
 	NSString *toolbarTitle = [document.fileName stringByDeletingPathExtension];
 
-	CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
-
-	mainToolbar = [[ThumbsMainToolbar alloc] initWithFrame:toolbarRect title:toolbarTitle]; // At top
-
-	mainToolbar.delegate = self;
-
-	[self.view addSubview:mainToolbar];
+    self.navigationItem.title = [@"Thumbnails - " stringByAppendingString:toolbarTitle];
 
 	CGRect thumbsRect = viewRect; UIEdgeInsets insets = UIEdgeInsetsZero;
 
@@ -121,7 +113,7 @@
 
 	theThumbsView.delegate = self;
 
-	[self.view insertSubview:theThumbsView belowSubview:mainToolbar];
+	[self.view addSubview:theThumbsView];
 
 	BOOL large = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
 
@@ -158,7 +150,7 @@
 	NSLog(@"%s", __FUNCTION__);
 #endif
 
-	mainToolbar = nil; theThumbsView = nil;
+	theThumbsView = nil;
 
 	[super viewDidUnload];
 }
@@ -190,55 +182,6 @@
 #endif
 
 	[super didReceiveMemoryWarning];
-}
-
-#pragma mark ThumbsMainToolbarDelegate methods
-
-- (void)tappedInToolbar:(ThumbsMainToolbar *)toolbar showControl:(UISegmentedControl *)control
-{
-	switch (control.selectedSegmentIndex)
-	{
-		case 0: // Show all page thumbs
-		{
-			showBookmarked = NO; // Show all thumbs
-
-			markedOffset = [theThumbsView insetContentOffset];
-
-			[theThumbsView reloadThumbsContentOffset:thumbsOffset];
-
-			break; // We're done
-		}
-
-		case 1: // Show bookmarked thumbs
-		{
-			showBookmarked = YES; // Only bookmarked
-
-			thumbsOffset = [theThumbsView insetContentOffset];
-
-			if (updateBookmarked == YES) // Update bookmarked list
-			{
-				[bookmarked removeAllObjects]; // Empty the list first
-
-				[document.bookmarks enumerateIndexesUsingBlock: // Enumerate
-					^(NSUInteger page, BOOL *stop)
-					{
-						[bookmarked addObject:[NSNumber numberWithInteger:page]];
-					}
-				];
-
-				markedOffset = CGPointZero; updateBookmarked = NO; // Reset
-			}
-
-			[theThumbsView reloadThumbsContentOffset:markedOffset];
-
-			break; // We're done
-		}
-	}
-}
-
-- (void)tappedInToolbar:(ThumbsMainToolbar *)toolbar doneButton:(UIButton *)button
-{
-	[delegate dismissThumbsViewController:self]; // Dismiss thumbs display
 }
 
 #pragma mark UIThumbsViewDelegate methods

@@ -90,6 +90,10 @@
 	<string>Avt5MVkbnSbKlBRg3HUziz</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Ink-HelveticaBold.otf</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UIPrerenderedIcon</key>

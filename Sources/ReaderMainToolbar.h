@@ -30,7 +30,7 @@
 @class ReaderMainToolbar;
 @class ReaderDocument;
 
-@protocol ReaderMainToolbarDelegate <NSObject>
+@protocol ReaderMainToolbarDelegate <UIToolbarDelegate>
 
 @required // Delegate protocols
 
@@ -44,7 +44,7 @@
 
 @end
 
-@interface ReaderMainToolbar : UIXToolbarView
+@interface ReaderMainToolbar : UIToolbar
 
 @property (nonatomic, unsafe_unretained, readwrite) id <ReaderMainToolbarDelegate> delegate;
 

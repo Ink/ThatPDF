@@ -118,38 +118,32 @@
 	CGFloat toolbarWidth = theToolbar.bounds.size.width; // Toolbar width
 
 	CGFloat titleX = BUTTON_SPACE; CGFloat titleWidth = (toolbarWidth - (BUTTON_SPACE + BUTTON_SPACE));
+    
+    UIImage *imageH = [UIImage imageNamed:@"Reader-Button-H"];
+    UIImage *imageN = [UIImage imageNamed:@"Reader-Button-N"];
+    
+    UIImage *buttonH = [imageH stretchableImageWithLeftCapWidth:5 topCapHeight:0];
+    UIImage *buttonN = [imageN stretchableImageWithLeftCapWidth:5 topCapHeight:0];
+    
+    titleWidth -= (CANCEL_BUTTON_WIDTH + BUTTON_SPACE); // Adjust title width
+    
+    CGFloat rightButtonX = (toolbarWidth - (CANCEL_BUTTON_WIDTH + BUTTON_SPACE)); // X
+    
+    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom]; // Cancel button
+    
+    cancelButton.frame = CGRectMake(rightButtonX, BUTTON_Y, CANCEL_BUTTON_WIDTH, BUTTON_HEIGHT);
+    [cancelButton setTitle:NSLocalizedString(@"Cancel", @"button") forState:UIControlStateNormal];
+    [cancelButton setTitleColor:[UIColor colorWithWhite:0.0f alpha:1.0f] forState:UIControlStateNormal];
+    [cancelButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.0f] forState:UIControlStateHighlighted];
+    [cancelButton addTarget:self action:@selector(cancelButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [cancelButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
+    [cancelButton setBackgroundImage:buttonN forState:UIControlStateNormal];
+    cancelButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    cancelButton.titleLabel.font = [UIFont systemFontOfSize:14.0f];
+    cancelButton.exclusiveTouch = YES;
+    
+    [theToolbar addSubview:cancelButton]; // Add to toolbar
 
-	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
-	{
-		UIImage *imageH = [UIImage imageNamed:@"Reader-Button-H"];
-		UIImage *imageN = [UIImage imageNamed:@"Reader-Button-N"];
-
-		UIImage *buttonH = [imageH stretchableImageWithLeftCapWidth:5 topCapHeight:0];
-		UIImage *buttonN = [imageN stretchableImageWithLeftCapWidth:5 topCapHeight:0];
-
-		titleWidth -= (CANCEL_BUTTON_WIDTH + BUTTON_SPACE); // Adjust title width
-
-		CGFloat rightButtonX = (toolbarWidth - (CANCEL_BUTTON_WIDTH + BUTTON_SPACE)); // X
-
-		UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom]; // Cancel button
-
-		cancelButton.frame = CGRectMake(rightButtonX, BUTTON_Y, CANCEL_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[cancelButton setTitle:NSLocalizedString(@"Cancel", @"button") forState:UIControlStateNormal];
-		[cancelButton setTitleColor:[UIColor colorWithWhite:0.0f alpha:1.0f] forState:UIControlStateNormal];
-		[cancelButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.0f] forState:UIControlStateHighlighted];
-		[cancelButton addTarget:self action:@selector(cancelButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		[cancelButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
-		[cancelButton setBackgroundImage:buttonN forState:UIControlStateNormal];
-		cancelButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		cancelButton.titleLabel.font = [UIFont systemFontOfSize:14.0f];
-		cancelButton.exclusiveTouch = YES;
-
-		[theToolbar addSubview:cancelButton]; // Add to toolbar
-	}
-	else // Large device
-	{
-		self.contentSizeForViewInPopover = CGSizeMake(MAXIMUM_TABLE_WIDTH, MAXIMUM_TABLE_HEIGHT);
-	}
 
 	CGRect titleRect = CGRectMake(titleX, TITLE_Y, titleWidth, TITLE_HEIGHT);
 

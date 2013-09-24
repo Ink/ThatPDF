@@ -21,4 +21,7 @@ typedef void (^INKActionCallbackBlock)(INKBlob *result, INKAction*action, NSErro
 // has been filled with all needed data and metadata.
 typedef INKBlob* (^INKDynamicBlobBlock)(void);
 
+// INKCompletionHandler is the method signature for running a method when another action is complete. It takes no arguments and returns nothing.
+typedef void (^INKCompletionHandler)(void);
+
 #endif

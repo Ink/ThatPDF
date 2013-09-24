@@ -12,7 +12,7 @@
 #import "INKBlob.h"
 #import "INKApp.h"
 
-@interface INKAction : NSObject <NSCopying>
+@interface INKAction : NSObject <NSCoding, NSCopying>
 
 //Provided by the server, don't touch
 @property(nonatomic) NSString *uuid;

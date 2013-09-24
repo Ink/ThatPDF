@@ -25,7 +25,7 @@
 
 #import "ReaderConstants.h"
 #import "ThatPDFAppDelegate.h"
-#import "LibraryViewController.h"
+#import "LibraryDirectoryViewController.h"
 #import "DirectoryWatcher.h"
 #import "CoreDataManager.h"
 #import "DocumentsUpdate.h"
@@ -43,7 +43,7 @@
 {
 	UIWindow *mainWindow; // Main App Window
 
-	LibraryViewController *rootViewController;
+	LibraryDirectoryViewController *rootViewController;
 
 	DirectoryWatcher *directoryWatcher;
 
@@ -143,9 +143,11 @@
 
 	mainWindow.backgroundColor = [UIColor scrollViewTexturedBackgroundColor]; // Window background color
 
-	rootViewController = [[LibraryViewController alloc] initWithNibName:nil bundle:nil]; // Root
+	rootViewController = [[LibraryDirectoryViewController alloc] initWithNibName:nil bundle:nil]; // Root
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
 
-    [mainWindow setRootViewController:rootViewController];
+    [mainWindow setRootViewController:navController];
     
 	[mainWindow makeKeyAndVisible]; // Make it the key window and visible
     

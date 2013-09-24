@@ -35,11 +35,9 @@
 
 @required // Delegate protocols
 
-- (void)tappedInToolbar:(UIXToolbarView *)toolbar infoButton:(UIButton *)button;
+- (void)updateButtonStatesForEditMode:(BOOL)editMode countSelected:(NSInteger)selected;
 
 - (void)directoryView:(LibraryDirectoryView *)directoryView didSelectDocumentFolder:(DocumentFolder *)folder;
-
-- (void)enableContainerScrollView:(BOOL)enabled;
 
 @end
 
@@ -49,9 +47,17 @@
 
 @property (nonatomic, unsafe_unretained, readwrite) UIViewController *ownViewController;
 
+@property (atomic) BOOL editMode;
+
 - (void)handleMemoryWarning;
 
 - (void)reloadDirectory;
+
+- (void)toggleEditMode;
+
+- (void)presentAddFolderAlert;
+
+- (void)presentConfirmDeleteAlert;
 
 @end
 

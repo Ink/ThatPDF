@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface INKApp : NSObject <NSCopying>
+@interface INKApp : NSObject <NSCoding, NSCopying>
 
 @property(nonatomic, strong) NSString *name;
 @property(nonatomic, strong) NSString *bundleId;

@@ -39,43 +39,19 @@
 
 @implementation LibraryDirectoryView
 {
-	HelpViewController *helpViewController;
-
-	UIPopoverController *popoverController;
-
 	NSArray *directories;
 
 	NSMutableSet *selected;
-
-	UIXToolbarView *theToolbar;
 
 	ReaderThumbsView *theThumbsView;
 
 	UIXTextEntry *theTextEntry;
 
 	UIAlertView *theAlertView;
-
-	UIButton *theCheckButton;
-	UIButton *thePlusButton;
-
-	UILabel *theTitleLabel;
-
-	BOOL editMode;
 }
 
 #pragma mark Constants
-
-#define BUTTON_Y 8.0f
-#define BUTTON_SPACE 8.0f
-#define BUTTON_HEIGHT 30.0f
-#define TITLE_HEIGHT 28.0f
-
-#define INFO_BUTTON_WIDTH 32.0f
-#define CHECK_BUTTON_WIDTH 36.0f
-#define PLUS_BUTTON_WIDTH 36.0f
-#define EDIT_BUTTON_WIDTH 44.0f
-
-#define TOOLBAR_HEIGHT 44.0f
+#define TOOLBAR_HEIGHT 0.0f
 
 #define THUMB_WIDTH_LARGE_DEVICE 192
 #define THUMB_HEIGHT_LARGE_DEVICE 120
@@ -87,20 +63,13 @@
 
 @synthesize delegate;
 @synthesize ownViewController;
+@synthesize editMode;
 
 #pragma mark Support methods
 
 - (void)updateButtonStates
 {
-	thePlusButton.enabled = (editMode ? NO : YES); // Set button enabled state
-
-	UIImage *checkImage = [UIImage imageNamed:(editMode ? @"Icon-Cross" : @"Icon-SelectFolder")]; // Image
-
-	[theCheckButton setImage:checkImage forState:UIControlStateNormal]; // Set check button image
-
-	UIImage *newFolderImage = [UIImage imageNamed:(editMode ? @"Icon-DeleteFolder" : @"Icon-NewFolder")]; // Image
-
-	[thePlusButton setImage:newFolderImage forState:UIControlStateNormal]; // Set plus button image
+    [delegate updateButtonStatesForEditMode:editMode countSelected:[selected count]];
 }
 
 - (void)resetSelectedFolders
@@ -150,80 +119,7 @@
 
 		CGRect viewRect = self.bounds; // View's bounds
 
-		CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
-
-		theToolbar = [[UIXToolbarView alloc] initWithFrame:toolbarRect]; // At top
-
 		BOOL large = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-
-		CGFloat buttonSpace = (large ? BUTTON_SPACE : 0.0f); CGFloat toolbarWidth = theToolbar.bounds.size.width;
-
-		CGFloat leftButtonX = buttonSpace; CGFloat titleX = buttonSpace; CGFloat titleWidth = (toolbarWidth - (buttonSpace + buttonSpace));
-
-		UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
-
-		infoButton.frame = CGRectMake(leftButtonX, BUTTON_Y, INFO_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[infoButton addTarget:self action:@selector(infoButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		infoButton.autoresizingMask = UIViewAutoresizingNone;
-		infoButton.showsTouchWhenHighlighted = YES;
-		infoButton.exclusiveTouch = YES;
-
-		[theToolbar addSubview:infoButton]; // Add to toolbar
-
-		titleX += (INFO_BUTTON_WIDTH + buttonSpace); titleWidth -= (INFO_BUTTON_WIDTH + buttonSpace);
-
-		CGFloat rightButtonX = (toolbarWidth - (CHECK_BUTTON_WIDTH + buttonSpace));
-
-		theCheckButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
-		theCheckButton.frame = CGRectMake(rightButtonX, BUTTON_Y, CHECK_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[theCheckButton setImage:[UIImage imageNamed:@"Icon-SelectFolder"] forState:UIControlStateNormal];
-		[theCheckButton addTarget:self action:@selector(checkButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		theCheckButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		theCheckButton.showsTouchWhenHighlighted = YES;
-		theCheckButton.exclusiveTouch = YES;
-
-		[theToolbar addSubview:theCheckButton]; // Add to toolbar
-
-		titleWidth -= (CHECK_BUTTON_WIDTH + buttonSpace); // Adjust title width
-
-		rightButtonX -= (PLUS_BUTTON_WIDTH + buttonSpace); // Next button position
-
-		thePlusButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
-		thePlusButton.frame = CGRectMake(rightButtonX, BUTTON_Y, PLUS_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[thePlusButton setImage:[UIImage imageNamed:@"Icon-NewFolder"] forState:UIControlStateNormal];
-		[thePlusButton addTarget:self action:@selector(plusButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		thePlusButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		thePlusButton.showsTouchWhenHighlighted = YES;
-		thePlusButton.exclusiveTouch = YES;
-
-		[theToolbar addSubview:thePlusButton]; // Add to toolbar
-
-		titleWidth -= (PLUS_BUTTON_WIDTH + buttonSpace); // Adjust title width
-
-		rightButtonX -= (EDIT_BUTTON_WIDTH + buttonSpace); // Next button position
-
-		CGRect titleRect = CGRectMake(titleX, BUTTON_Y, titleWidth, TITLE_HEIGHT);
-
-		theTitleLabel = [[UILabel alloc] initWithFrame:titleRect];
-
-		theTitleLabel.textAlignment = NSTextAlignmentCenter;
-		theTitleLabel.font = [UIFont systemFontOfSize:19.0f];
-		theTitleLabel.textColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
-		theTitleLabel.shadowColor = [UIColor colorWithWhite:0.65f alpha:1.0f];
-		theTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		theTitleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-		theTitleLabel.backgroundColor = [UIColor clearColor];
-		theTitleLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
-		theTitleLabel.adjustsFontSizeToFitWidth = YES;
-		theTitleLabel.minimumScaleFactor = 14.0f/19.f;
-
-		theTitleLabel.text = NSLocalizedString(@"ThatPDF Document Library", @"text");
-
-		[theToolbar addSubview:theTitleLabel]; // Add to toolbar
-
-		[self addSubview:theToolbar]; // Add toolbar to container view
 
 		CGRect thumbsRect = viewRect; UIEdgeInsets insets = UIEdgeInsetsZero;
 
@@ -242,7 +138,7 @@
 
 		theThumbsView.delegate = self; // Set the ReaderThumbsView delegate to self
 
-		[self insertSubview:theThumbsView belowSubview:theToolbar]; // Add to container view
+		[self addSubview:theThumbsView]; // Add to container view
 
 		NSInteger thumbWidth = (large ? THUMB_WIDTH_LARGE_DEVICE : THUMB_WIDTH_SMALL_DEVICE); // Width
 
@@ -330,8 +226,8 @@
 		else
 			[selected addObject:folder];
 
-		thePlusButton.enabled = ((selected.count > 0) ? YES : NO);
-
+        [self updateButtonStates];
+        
 		folder.isChecked = (folder.isChecked ? NO : YES); // Toggle
 
 		[thumbsView refreshThumbWithIndex:index]; // Refresh thumb
@@ -348,7 +244,7 @@
 
 		[selected addObject:folder]; folder.isChecked = YES; // Select folder
 
-		thePlusButton.enabled = YES; // Enable buttons
+        [self updateButtonStates];
 
 		[thumbsView refreshThumbWithIndex:index]; // Refresh thumb
 	}
@@ -399,55 +295,15 @@
 		}
 	}
 
-	[theTextEntry animateHide]; [delegate enableContainerScrollView:YES];
+	[theTextEntry animateHide];
 }
 
 - (void)cancelButtonTappedInTextEntry:(UIXTextEntry *)textEntry
 {
-	[theTextEntry animateHide]; [delegate enableContainerScrollView:YES];
+	[theTextEntry animateHide];
 }
 
 #pragma mark UIButton action methods
-
-- (void)infoButtonTapped:(UIButton *)button
-{
-	if (helpViewController == nil) // Create the HelpViewController
-	{
-		helpViewController = [[HelpViewController alloc] initWithNibName:nil bundle:nil];
-
-		helpViewController.delegate = self; // Set the delegate to us
-	}
-
-	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) // Popover
-	{
-		if (popoverController == nil) // Create a UIPopoverController for the HelpViewController
-		{
-			popoverController = [[UIPopoverController alloc] initWithContentViewController:helpViewController];
-
-			//popoverController.delegate = self; // Set the delegate to us
-		}
-
-		if (popoverController.popoverVisible == NO) // Show popover
-		{
-			popoverController.popoverContentSize = helpViewController.contentSizeForViewInPopover;
-
-			[popoverController presentPopoverFromRect:button.frame inView:button.superview permittedArrowDirections:1 animated:YES];
-		}
-		else // Dismiss the popover
-		{
-			[popoverController dismissPopoverAnimated:YES];
-		}
-	}
-	else // Modal view controller
-	{
-		helpViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-		helpViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-
-		[self.ownViewController presentViewController:helpViewController animated:YES completion:^{
-            
-        }];
-	}
-}
 
 - (void)checkButtonTapped:(UIButton *)button
 {
@@ -475,39 +331,35 @@
 
 			[theTextEntry setTextField:folder.name]; // Start with current folder name
 
-			[delegate enableContainerScrollView:NO]; [theTextEntry animateShow];
+            [theTextEntry animateShow];
 		}
 	}
 }
 
-- (void)plusButtonTapped:(UIButton *)button
-{
-	if (editMode == NO) // Check edit mode
-	{
-		if (theTextEntry == nil) // Create text entry dialog view
-		{
-			theTextEntry = [[UIXTextEntry alloc] initWithFrame:self.bounds];
+- (void)presentAddFolderAlert {
+    if (theTextEntry == nil) // Create text entry dialog view
+    {
+        theTextEntry = [[UIXTextEntry alloc] initWithFrame:self.bounds];
+        
+        theTextEntry.delegate = self; // Set the delegate to us
+        
+        [self addSubview:theTextEntry]; // Add view
+    }
+    
+    [theTextEntry setTitle:NSLocalizedString(@"NewFolderName", @"title") withType:UIXTextEntryTypeText];
+    
+    [theTextEntry animateShow];
+}
 
-			theTextEntry.delegate = self; // Set the delegate to us
-
-			[self addSubview:theTextEntry]; // Add view
-		}
-
-		[theTextEntry setTitle:NSLocalizedString(@"NewFolderName", @"title") withType:UIXTextEntryTypeText];
-
-		[delegate enableContainerScrollView:NO]; [theTextEntry animateShow];
-	}
-	else // Handle being in edit mode
-	{
-		if (theAlertView == nil) // Create the alert view the first time we need it
-		{
-			theAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ConfirmDeleteTitle", @"title")
-							message:NSLocalizedString(@"ConfirmDeleteMessage", @"message") delegate:self cancelButtonTitle:nil
-							otherButtonTitles:NSLocalizedString(@"Delete", @"button"), NSLocalizedString(@"Cancel", @"button"), nil];
-		}
-
-		[theAlertView show]; // Show the alert view
-	}
+- (void)presentConfirmDeleteAlert {
+    if (theAlertView == nil) // Create the alert view the first time we need it
+    {
+        theAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ConfirmDeleteTitle", @"title")
+                                                  message:NSLocalizedString(@"ConfirmDeleteMessage", @"message") delegate:self cancelButtonTitle:nil
+                                        otherButtonTitles:NSLocalizedString(@"Delete", @"button"), NSLocalizedString(@"Cancel", @"button"), nil];
+    }
+    
+    [theAlertView show]; // Show the alert view
 }
 
 #pragma mark UIAlertViewDelegate methods
@@ -535,8 +387,6 @@
 	}
 }
 
-#pragma mark HelpViewControllerDelegate methods
-
 - (void)dismissHelpViewController:(HelpViewController *)viewController
 {
 	[self.ownViewController dismissViewControllerAnimated:YES completion:^{}];
@@ -549,11 +399,6 @@
 	if ((theAlertView != nil) && (theAlertView.visible == YES))
 	{
 		[theAlertView dismissWithClickedButtonIndex:(-1) animated:NO];
-	}
-
-	if ((popoverController != nil) && (popoverController.popoverVisible == YES))
-	{
-		[popoverController dismissPopoverAnimated:NO];
 	}
 }
 

@@ -26,7 +26,7 @@
 @property (strong,atomic) INKAction *ios6Action;
 
 //singleton
-+ (id) sharedManager;
++ (INKCoreManager*) sharedManager;
 
 // Receive actions by registering the app to listen to specific actions. The selector
 // will be called upon receiving the action. The selector should support receiving

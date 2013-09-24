@@ -21,6 +21,7 @@
 #define RED_PEN_BUTTON_WIDTH 40.0f
 #define SIGN_BUTTON_WIDTH 40.0f
 #define TEXT_BUTTON_WIDTH 40.0f
+#define INK_GLYPH_WIDTH 20.0f
 
 #define UNDO_BUTTON_WIDTH 56.0f
 
@@ -60,9 +61,9 @@
 		CGFloat leftButtonX = BUTTON_X; // Left button start X position
         
 		UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-		cancelButton.frame = CGRectMake(leftButtonX, BUTTON_Y, CANCEL_BUTTON_WIDTH, BUTTON_HEIGHT);
 
+        NSInteger width = CANCEL_BUTTON_WIDTH;
+        
         //Determine what language to use in the back button - if we were launched with Ink, we want
         //to signal that ending means Ink will open up
         if ([Ink appShouldReturn]) {
@@ -70,6 +71,7 @@
         } else {
             [cancelButton setTitle:NSLocalizedString(@"Cancel", @"button") forState:UIControlStateNormal];
         }
+        cancelButton.frame = CGRectMake(leftButtonX, BUTTON_Y, width, BUTTON_HEIGHT);
 		[cancelButton setTitleColor:[UIColor colorWithWhite:0.0f alpha:1.0f] forState:UIControlStateNormal];
 		[cancelButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.0f] forState:UIControlStateHighlighted];
 		[cancelButton addTarget:self action:@selector(cancelButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -79,9 +81,9 @@
 		cancelButton.autoresizingMask = UIViewAutoresizingNone;
 		cancelButton.exclusiveTouch = YES;
         
-		[self addSubview:cancelButton]; leftButtonX += (CANCEL_BUTTON_WIDTH + BUTTON_SPACE);
+		[self addSubview:cancelButton]; leftButtonX += (width + BUTTON_SPACE);
         
-		titleX += (CANCEL_BUTTON_WIDTH + BUTTON_SPACE); titleWidth -= (CANCEL_BUTTON_WIDTH + BUTTON_SPACE);
+		titleX += (width + BUTTON_SPACE); titleWidth -= (width + BUTTON_SPACE);
         
         //Give the undo some padding
         titleX += BUTTON_SPACE * 2;
@@ -107,14 +109,23 @@
         
         //right side
         CGFloat rightButtonX = viewWidth; // Right button start X position
-        
-        rightButtonX -= (DONE_BUTTON_WIDTH + BUTTON_SPACE);
-        
         UIButton *doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
         
-        doneButton.frame = CGRectMake(rightButtonX, BUTTON_Y, DONE_BUTTON_WIDTH, BUTTON_HEIGHT);
-        [doneButton setTitle:NSLocalizedString(@"Done", @"button") forState:UIControlStateNormal];
-		[doneButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        NSInteger doneWidth = DONE_BUTTON_WIDTH;
+
+        if ([Ink appShouldReturn]) {
+            doneWidth += INK_GLYPH_WIDTH;
+            [doneButton setTitle:NSLocalizedString(@" Done", @"button") forState:UIControlStateNormal];
+            [doneButton setImage:[UIImage imageNamed:@"InkBlack"] forState:UIControlStateNormal];
+        } else {
+            [doneButton setTitle:NSLocalizedString(@"Done", @"button") forState:UIControlStateNormal];
+        }
+        
+        rightButtonX -= (doneWidth + BUTTON_SPACE);
+        
+        doneButton.frame = CGRectMake(rightButtonX, BUTTON_Y, doneWidth, BUTTON_HEIGHT);
+		[doneButton setTitleColor:[UIColor colorWithWhite:0.0f alpha:1.0f] forState:UIControlStateNormal];
+        [doneButton setTitleColor:[UIColor colorWithWhite:0.5f alpha:1.0f] forState:UIControlStateDisabled];
 		[doneButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:1.0f] forState:UIControlStateHighlighted];
 		[doneButton addTarget:self action:@selector(doneButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
 		[doneButton setBackgroundImage:buttonH forState:UIControlStateHighlighted];
@@ -124,7 +135,7 @@
         doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         doneButton.exclusiveTouch = YES;
         
-        [self addSubview:doneButton]; titleWidth -= (DONE_BUTTON_WIDTH + BUTTON_SPACE);
+        [self addSubview:doneButton]; titleWidth -= (doneWidth + BUTTON_SPACE);
         
         rightButtonX -= (SIGN_BUTTON_WIDTH + BUTTON_SPACE);
         

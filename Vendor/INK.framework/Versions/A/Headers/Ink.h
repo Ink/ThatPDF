@@ -56,9 +56,11 @@
  The Ink mobile framework is the library for allowing iOS apps to hook into the
  Ink ecosystem. Each app is both a launching-off point for actions and a recipient of actions.
  
- v0.4.0 - Initial release candidate.
+ v0.4.5 - Added callback blocks for when an action is taken
  
  Change log:
+ v0.4.2: Updated framework; improved reliability. 8/25/2013
+ v0.4.1: Updated library with bugfix for sqllie database; reduced excessive logging. 8/21/2013
  v0.4.0: First public release. 8/13/2013
 */
 @interface Ink : NSObject
@@ -148,6 +150,16 @@
 + (BOOL)appShouldReturn;
 
 /**
+ Provides access to information about the calling app.
+ 
+ If you need the name or other information about the calling app to display in your user interface, you can get access to information about the app that the user came from.
+ 
+ @return Returns the app that the user came from, if the user is currently in an Ink workflow; otherwise, returns nil.
+ */
+
++ (INKApp*)callingApp;
+
+/**
  Bring up the Ink workspace to allow the user to return to the calling application.
  
  This method should be called when the user completes an Ink workflow but the
@@ -155,15 +167,20 @@
  
  The data shown in the workspace is the INKBlob that was used to launch this app.
  
+ Note that you should not call any of the return actions in any other context than upon a button press.
+ 
  Before calling this, check the appShouldReturn method:
  
     if ([Ink appShouldReturn]) {
-        [Ink return];
+        [Ink showWorkspaceToReturnAndOnComplete:^{
+            //Cleanup code to run when the user leaves
+        }];
     }
  
+ @param completion The block to run when the user presses Return and leaves your app so that you can dismiss and release any views or content related to the current action.
  @see appShouldReturn
 */
-+ (void)return;
++ (void)showWorkspaceToReturnAndOnComplete:(INKCompletionHandler)completion;
 
 /**
  Bring up the Ink workspace and allow the user to continue their workflow with new data.
@@ -171,23 +188,51 @@
  This method should be called whenever the user completes a workflow and they have new
  data to work with, for example for an edit action.
  
+ Note that you should not call any of the return actions in any other context than upon a button press.
+ 
  Before calling this, check the appShouldReturn method.
  @param blob The new data that was a result of the user completing the desired action.
+ @param completion The block to run when the user presses Return and leaves your app so that you can dismiss and release any views or content related to the current action.
  @see appShouldReturn
  */
-+ (void)returnBlob:(INKBlob*)blob;
++ (void)showWorkspaceToReturnBlob:(INKBlob*)blob andOnComplete:(INKCompletionHandler)completion;
 
 /**
- Bring up the Ink workspace and allow the user to continue their workflow but show an error.
+ Bring up the Ink workspace and allow the user to continue their workflow with new data, dynamically generated.
  
- This method should be called when an error occurred when the current app tried to complete the request.
+ This method should be called whenever the user completes a workflow and they have new
+ data to work with, for example for an edit action. Use this method instead of [Ink returnBlob:]
+ when the data may take a small amount of time to generate, so that you can show the workspace while the data
+ is being created.
+ 
+ Note that you should not call any of the return actions in any other context than upon a button press.
  
  Before calling this, check the appShouldReturn method.
- @param error The error that occurred when trying to execute the desired action.
+ @param UTI The UTI of the blob to return.
+ @param block The block that generates and returns the new data (as a blob) that was a result of the user completing the desired action.
+ @param completion The block to run when the user presses Return and leaves your app so that you can dismiss and release any views or content related to the current action.
+ @see appShouldReturn
+ @see returnBlob
+ */
++ (void) showWorkspaceToReturnWithUTI:(NSString*)UTI dynamicBlob:(INKDynamicBlobBlock)block andOnComplete:(INKCompletionHandler)completion;
+
+/**
+ Returns the user immediately to the Ink workspace in the calling app.
+ 
+ This method should be called whenever the user has explictly asked to cancel the current
+ workflow and return to the previous application. This should also be used in the case of an error:
+ show the user that an error occured, and then present a button that triggers cancelAndReturn when pressed.
+
+ Note that you should not call any of the return actions in any other context than upon a button press.
+ 
+ Before calling this, check the appShouldReturn method:
+ 
+ if ([Ink appShouldReturn]) {
+    [Ink cancelAndReturn];
+ }
  @see appShouldReturn
  */
-+ (void)returnWithError:(NSError*)error;
-
++ (void)cancelAndReturn;
 
 ///-------------------------
 /// @name Ink workspace

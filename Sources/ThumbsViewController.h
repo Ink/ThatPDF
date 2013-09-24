@@ -25,7 +25,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "ThumbsMainToolbar.h"
 #import "ReaderThumbsView.h"
 
 @class ReaderDocument;

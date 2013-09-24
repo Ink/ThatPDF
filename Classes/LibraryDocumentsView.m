@@ -41,22 +41,18 @@
 #import <INK/Ink.h>
 
 @interface LibraryDocumentsView () <ReaderThumbsViewDelegate, UIXTextEntryDelegate, FoldersViewControllerDelegate,
-									UIAlertViewDelegate, UIPopoverControllerDelegate>
+									UIAlertViewDelegate>
 @end
 
 @implementation LibraryDocumentsView
 {
 	FoldersViewController *foldersViewController;
 
-	UIPopoverController *popoverController;
-
 	NSArray *documents;
 
 	NSMutableSet *selected;
 
 	DocumentFolder *inFolder;
-
-	UIXToolbarView *theToolbar;
 
 	ReaderThumbsView *theThumbsView;
 
@@ -66,31 +62,12 @@
 
 	UIAlertView *theAlertView;
 
-	UIButton *theFolderButton;
-	UIButton *theCheckButton;
-	UIButton *theAddButton;
-	UIButton *theEditButton;
-
-	UILabel *theTitleLabel;
-
     FPPickerController *fpController;
-    
-	BOOL editMode;
 }
 
 #pragma mark Constants
 
-#define BUTTON_Y 8.0f
-#define BUTTON_SPACE 8.0f
-#define BUTTON_HEIGHT 30.0f
-#define TITLE_HEIGHT 28.0f
-
-#define FOLDER_BUTTON_WIDTH 40.0f
-#define CHECK_BUTTON_WIDTH 36.0f
-#define MINUS_BUTTON_WIDTH 36.0f
-#define EDIT_BUTTON_WIDTH 44.0f
-
-#define TOOLBAR_HEIGHT 44.0f
+#define TOOLBAR_HEIGHT 0.0f
 
 #define THUMB_SIZE_SMALL_DEVICE 160
 #define THUMB_SIZE_LARGE_DEVICE 256
@@ -99,24 +76,13 @@
 
 @synthesize delegate;
 @synthesize ownViewController;
+@synthesize editMode;
 
 #pragma mark Support methods
 
 - (void)updateButtonStates
 {
-	theEditButton.enabled = NO; theEditButton.hidden = (editMode ? NO : YES); // Set button states
-
-	theFolderButton.enabled = NO; theFolderButton.hidden = (editMode ? NO : YES); // Set button states
-
-	theAddButton.enabled = (editMode ? NO : YES); // Set button states
-
-    UIImage *addImage = [UIImage imageNamed:(editMode ? @"Icon-DeleteFile" : @"Icon-AddFile")]; // Image
-    
-	[theAddButton setImage:addImage forState:UIControlStateNormal]; // Set check button image
-    
-	UIImage *checkImage = [UIImage imageNamed:(editMode ? @"Icon-Cross" : @"Icon-SelectFile")]; // Image
-
-	[theCheckButton setImage:checkImage forState:UIControlStateNormal]; // Set check button image
+    [self.delegate updateButtonStatesForEditMode:editMode countSelected:[selected count]];
 }
 
 - (void)resetSelectedDocuments
@@ -189,94 +155,7 @@
 
 		CGRect viewRect = self.bounds; // View's bounds
 
-		CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
-
-		theToolbar = [[UIXToolbarView alloc] initWithFrame:toolbarRect]; // At top
-
 		BOOL large = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-
-		CGFloat buttonSpace = (large ? BUTTON_SPACE : 0.0f); CGFloat toolbarWidth = theToolbar.bounds.size.width;
-
-		CGFloat leftButtonX = buttonSpace; CGFloat titleX = buttonSpace; CGFloat titleWidth = (toolbarWidth - (buttonSpace + buttonSpace));
-
-		theFolderButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
-		theFolderButton.frame = CGRectMake(leftButtonX, BUTTON_Y, FOLDER_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[theFolderButton setImage:[UIImage imageNamed:@"Icon-Folder"] forState:UIControlStateNormal];
-		[theFolderButton addTarget:self action:@selector(folderButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		theFolderButton.autoresizingMask = UIViewAutoresizingNone;
-		theFolderButton.showsTouchWhenHighlighted = YES;
-		theFolderButton.exclusiveTouch = YES;
-		theFolderButton.hidden = YES;
-
-		[theToolbar addSubview:theFolderButton]; // Add to toolbar
-
-		titleX += (FOLDER_BUTTON_WIDTH + buttonSpace); titleWidth -= (FOLDER_BUTTON_WIDTH + buttonSpace);
-
-		CGFloat rightButtonX = (toolbarWidth - (CHECK_BUTTON_WIDTH + buttonSpace));
-
-		theCheckButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
-		theCheckButton.frame = CGRectMake(rightButtonX, BUTTON_Y, CHECK_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[theCheckButton setImage:[UIImage imageNamed:@"Icon-SelectFile"] forState:UIControlStateNormal];
-		[theCheckButton addTarget:self action:@selector(checkButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		theCheckButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		theCheckButton.showsTouchWhenHighlighted = YES;
-		theCheckButton.exclusiveTouch = YES;
-
-		[theToolbar addSubview:theCheckButton]; // Add to toolbar
-
-		titleWidth -= (CHECK_BUTTON_WIDTH + buttonSpace); // Adjust title width
-
-		rightButtonX -= (MINUS_BUTTON_WIDTH + buttonSpace); // Next button position
-
-		theAddButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
-		theAddButton.frame = CGRectMake(rightButtonX, BUTTON_Y, MINUS_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[theAddButton setImage:[UIImage imageNamed:@"Icon-AddFile"] forState:UIControlStateNormal];
-		[theAddButton addTarget:self action:@selector(addButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		theAddButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		theAddButton.showsTouchWhenHighlighted = YES;
-		theAddButton.exclusiveTouch = YES;
-
-		[theToolbar addSubview:theAddButton]; // Add to toolbar
-
-		titleWidth -= (MINUS_BUTTON_WIDTH + buttonSpace); // Adjust title width
-
-		rightButtonX -= (EDIT_BUTTON_WIDTH + buttonSpace); // Next button position
-
-		theEditButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
-		theEditButton.frame = CGRectMake(rightButtonX, BUTTON_Y, EDIT_BUTTON_WIDTH, BUTTON_HEIGHT);
-		[theEditButton setImage:[UIImage imageNamed:@"Icon-Edit"] forState:UIControlStateNormal];
-		[theEditButton addTarget:self action:@selector(editButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-		theEditButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		theEditButton.showsTouchWhenHighlighted = YES;
-		theEditButton.exclusiveTouch = YES;
-		theEditButton.hidden = YES;
-
-		[theToolbar addSubview:theEditButton]; // Add to toolbar
-
-		titleWidth -= (EDIT_BUTTON_WIDTH + buttonSpace); // Adjust title width
-
-		CGRect titleRect = CGRectMake(titleX, BUTTON_Y, titleWidth, TITLE_HEIGHT);
-
-		theTitleLabel = [[UILabel alloc] initWithFrame:titleRect];
-
-		theTitleLabel.textAlignment = NSTextAlignmentCenter;
-		theTitleLabel.font = [UIFont systemFontOfSize:19.0f];
-		theTitleLabel.textColor = [UIColor colorWithWhite:0.0f alpha:1.0f];
-		theTitleLabel.shadowColor = [UIColor colorWithWhite:0.65f alpha:1.0f];
-		theTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		theTitleLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-		theTitleLabel.backgroundColor = [UIColor clearColor];
-		theTitleLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
-		theTitleLabel.adjustsFontSizeToFitWidth = YES;
-		theTitleLabel.minimumScaleFactor = 14.0f/19.f;
-
-		[theToolbar addSubview:theTitleLabel]; // Add to toolbar
-
-		[self addSubview:theToolbar]; // Add toolbar to container view
 
 		CGRect thumbsRect = viewRect; UIEdgeInsets insets = UIEdgeInsetsZero;
 
@@ -295,7 +174,7 @@
 
 		theThumbsView.delegate = self; // Set the ReaderThumbsView delegate to self
 
-		[self insertSubview:theThumbsView belowSubview:theToolbar]; // Add to container view
+		[self addSubview:theThumbsView]; // Add to container view
 
 		NSInteger thumbSize = (large ? THUMB_SIZE_LARGE_DEVICE : THUMB_SIZE_SMALL_DEVICE); // Size
 
@@ -307,11 +186,6 @@
 		[notificationCenter addObserver:self selector:@selector(openedNewDocument:) name:DocumentsUpdateOpenNotification object:nil];
 
 		[notificationCenter addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-
-		[notificationCenter addObserver:self selector:@selector(foldersWhereDeleted:) name:DocumentFoldersDeletedNotification object:nil];
-
-		[notificationCenter addObserver:self selector:@selector(folderWasDeleted:) name:DocumentFolderDeletedNotification object:nil];
-		[notificationCenter addObserver:self selector:@selector(folderWasRenamed:) name:DocumentFolderRenamedNotification object:nil];
 
 		selected = [NSMutableSet new]; // Selected documents set
 	}
@@ -339,8 +213,6 @@
 
 	documents = [ReaderDocument allInMOC:mainMOC withFolder:folder]; // Specified folder
 
-	theCheckButton.enabled = (documents.count > 0);
-
 	[theThumbsView reloadThumbsContentOffset:CGPointZero];
 }
 
@@ -358,11 +230,9 @@
 
 		documents = [ReaderDocument allInMOC:mainMOC withFolder:folder]; // Specified folder
 
-		theCheckButton.enabled = (documents.count > 0); // Set button state
+        [self updateButtonStates];
 
 		[theThumbsView reloadThumbsContentOffset:CGPointZero];
-
-		theTitleLabel.text = folder.name; // Folder name
 	}
 }
 
@@ -464,7 +334,7 @@
 
 				[theTextEntry setTitle:NSLocalizedString(@"DocumentPassword", @"title") withType:UIXTextEntryTypeSecure];
 
-				[delegate enableContainerScrollView:NO]; [theTextEntry animateShow];
+                [theTextEntry animateShow];
 			}
 		}
 		else // Handle being in edit mode
@@ -474,11 +344,7 @@
 			else
 				[selected addObject:document];
 
-			theEditButton.enabled = ((selected.count == 1) ? YES : NO);
-
-			theAddButton.enabled = ((selected.count > 0) ? YES : NO);
-
-			theFolderButton.enabled = ((selected.count > 0) ? YES : NO);
+            [self updateButtonStates];
 
 			document.isChecked = (document.isChecked ? NO : YES); // Toggle
 
@@ -499,7 +365,7 @@
 		{
 			[selected addObject:document]; document.isChecked = YES; // Select document
 
-			theAddButton.enabled = YES; theEditButton.enabled = YES; theFolderButton.enabled = YES;
+            [self updateButtonStates];
 
 			[thumbsView refreshThumbWithIndex:index]; // Refresh thumb
 		}
@@ -582,124 +448,84 @@
 		}
 	}
 
-	[theTextEntry animateHide]; [delegate enableContainerScrollView:YES];
+	[theTextEntry animateHide];
 }
 
 - (void)cancelButtonTappedInTextEntry:(UIXTextEntry *)textEntry
 {
-	[theTextEntry animateHide]; [delegate enableContainerScrollView:YES]; openDocument = nil;
+	[theTextEntry animateHide]; openDocument = nil;
 }
 
 #pragma mark UIButton action methods
 
-- (void)folderButtonTapped:(UIButton *)button
-{
-	if (editMode == YES) // Check edit mode
-	{
-		if ([inFolder.type integerValue] != DocumentFolderTypeRecent)
-		{
-			if (foldersViewController == nil) // Create the FoldersViewController
-			{
-				foldersViewController = [[FoldersViewController alloc] initWithNibName:nil bundle:nil];
-
-				foldersViewController.delegate = self; // Set the delegate to us
-			}
-
-			if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) // Popover
-			{
-				if (popoverController == nil) // Create a UIPopoverController for the FoldersViewController
-				{
-					popoverController = [[UIPopoverController alloc] initWithContentViewController:foldersViewController];
-
-					//popoverController.delegate = self; // Set the delegate to us
-				}
-
-				if (popoverController.popoverVisible == NO) // Show popover
-				{
-					[foldersViewController reloadData]; // Reload view controller contents
-
-					popoverController.popoverContentSize = foldersViewController.contentSizeForViewInPopover;
-
-					[popoverController presentPopoverFromRect:button.frame inView:button.superview permittedArrowDirections:1 animated:YES];
-				}
-				else // Dismiss the popover
-				{
-					[popoverController dismissPopoverAnimated:YES];
-				}
-			}
-			else // Modal view controller
-			{
-				[foldersViewController reloadData]; // Reload view controller contents
-
-				foldersViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-				foldersViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-
-				[self.ownViewController presentViewController:foldersViewController animated:YES completion:^{
-                    
-                }];
-			}
-		}
-		else // Handle recent documents folder type
-		{
-			NSDate *lastOpened = [NSDate dateWithTimeIntervalSinceReferenceDate:0.0];
-
-			for (ReaderDocument *document in selected) // Enumerate through selected documents
-			{
-				document.lastOpen = lastOpened; // Reset documents last opened date
-			}
-
-			[[CoreDataManager sharedInstance] saveMainManagedObjectContext]; // Save changes
-
-			[self resetEditMode]; [self reloadDocumentsUpdated]; // Refresh display
-		}
-	}
+- (void)presentRenameAlert {
+    if (selected.count == 1) // Rename single selection
+    {
+        if (theTextEntry == nil) // Create text entry dialog view
+        {
+            theTextEntry = [[UIXTextEntry alloc] initWithFrame:self.bounds];
+            
+            theTextEntry.delegate = self; // Set the delegate to us
+            
+            [self addSubview:theTextEntry]; // Add text entry view
+        }
+        
+        ReaderDocument *document = [selected anyObject]; // Selected document
+        
+        [theTextEntry setTitle:NSLocalizedString(@"NewDocumentName", @"title") withType:UIXTextEntryTypeText];
+        
+        [theTextEntry setTextField:[self stripExtension:document.fileName]]; // Show document file name
+        
+        [theTextEntry animateShow];
+    }
 }
 
-- (void)editButtonTapped:(UIButton *)button
+- (void)presentDeleteAlert
 {
-	if (editMode == YES) // Check edit mode
-	{
-		if (selected.count == 1) // Rename single selection
-		{
-			if (theTextEntry == nil) // Create text entry dialog view
-			{
-				theTextEntry = [[UIXTextEntry alloc] initWithFrame:self.bounds];
-
-				theTextEntry.delegate = self; // Set the delegate to us
-
-				[self addSubview:theTextEntry]; // Add text entry view
-			}
-
-			ReaderDocument *document = [selected anyObject]; // Selected document
-
-			[theTextEntry setTitle:NSLocalizedString(@"NewDocumentName", @"title") withType:UIXTextEntryTypeText];
-
-			[theTextEntry setTextField:[self stripExtension:document.fileName]]; // Show document file name
-
-			[delegate enableContainerScrollView:NO]; [theTextEntry animateShow];
-		}
-	}
+    if (theAlertView == nil) // Create the alert view the first time we need it
+    {
+        theAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ConfirmDeleteTitle", @"title")
+                                                  message:NSLocalizedString(@"ConfirmDeleteMessage", @"message") delegate:self cancelButtonTitle:nil
+                                        otherButtonTitles:NSLocalizedString(@"Delete", @"button"), NSLocalizedString(@"Cancel", @"button"), nil];
+    }
+    
+    [theAlertView show]; // Show the alert view
 }
 
-- (void)addButtonTapped:(UIButton *)button
-{
-	if (editMode == NO) {
-        [delegate tappedInToolbar:theToolbar addFileButton:button];
-    }else{ // Handle being in edit mode
-		if (theAlertView == nil) // Create the alert view the first time we need it
-		{
-			theAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ConfirmDeleteTitle", @"title")
-							message:NSLocalizedString(@"ConfirmDeleteMessage", @"message") delegate:self cancelButtonTitle:nil
-							otherButtonTitles:NSLocalizedString(@"Delete", @"button"), NSLocalizedString(@"Cancel", @"button"), nil];
-		}
 
-		[theAlertView show]; // Show the alert view
-	}
-}
-
-- (void)checkButtonTapped:(UIButton *)button
+- (void) presentFolderViewController
 {
-	[self toggleEditMode]; // Toggle edit mode
+    if ([inFolder.type integerValue] != DocumentFolderTypeRecent)
+    {
+        if (foldersViewController == nil) // Create the FoldersViewController
+        {
+            foldersViewController = [[FoldersViewController alloc] initWithNibName:nil bundle:nil];
+            
+            foldersViewController.delegate = self; // Set the delegate to us
+        }
+        
+        [foldersViewController reloadData]; // Reload view controller contents
+        
+        foldersViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        foldersViewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        
+        [self.ownViewController presentViewController:foldersViewController animated:YES completion:^{
+            
+        }];
+    }
+    else // Handle recent documents folder type
+    {
+        NSDate *lastOpened = [NSDate dateWithTimeIntervalSinceReferenceDate:0.0];
+        
+        for (ReaderDocument *document in selected) // Enumerate through selected documents
+        {
+            document.lastOpen = lastOpened; // Reset documents last opened date
+        }
+        
+        [[CoreDataManager sharedInstance] saveMainManagedObjectContext]; // Save changes
+        
+        [self resetEditMode]; [self reloadDocumentsUpdated]; // Refresh display
+    }
 }
 
 #pragma mark UIAlertViewDelegate methods
@@ -748,12 +574,9 @@
 		[self resetEditMode]; [self reloadDocumentsUpdated]; // Refresh display
 	}
 
-	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-		[popoverController dismissPopoverAnimated:NO]; // Dismiss the popover
-	else
-		[self.ownViewController dismissViewControllerAnimated:YES completion:^{
-            
-        }];
+    [self.ownViewController dismissViewControllerAnimated:YES completion:^{
+        
+    }];
 }
 
 - (void)dismissFoldersViewController:(FoldersViewController *)viewController
@@ -761,54 +584,6 @@
     [self.ownViewController dismissViewControllerAnimated:YES completion:^{
         
     }];
-}
-
-#pragma mark DocumentFolder notifications
-
-- (void)folderWasDeleted:(NSNotification *)notification
-{
-	assert(inFolder != nil); // Must not be nil
-
-	NSDictionary *userInfo = notification.userInfo; // Notification user info
-
-	NSManagedObjectID *objectID = [userInfo objectForKey:DocumentFolderNotificationObjectID];
-
-	if ([[inFolder objectID] isEqual:objectID]) // Handle folder delete if object IDs are equal
-	{
-		NSManagedObjectContext *mainMOC = [[CoreDataManager sharedInstance] mainManagedObjectContext];
-
-		DocumentFolder *folder = [DocumentFolder folderInMOC:mainMOC type:DocumentFolderTypeDefault];
-
-		[self reloadDocumentsWithFolder:folder]; // Show the default folder after delete
-	}
-}
-
-- (void)folderWasRenamed:(NSNotification *)notification
-{
-	assert(inFolder != nil); // Must not be nil
-
-	NSDictionary *userInfo = notification.userInfo; // Notification user info
-
-	NSManagedObjectID *objectID = [userInfo objectForKey:DocumentFolderNotificationObjectID];
-
-	if ([[inFolder objectID] isEqual:objectID]) // Handle folder rename if object IDs are equal
-	{
-		NSManagedObjectContext *mainMOC = [[CoreDataManager sharedInstance] mainManagedObjectContext];
-
-		DocumentFolder *folder = (DocumentFolder *)[mainMOC existingObjectWithID:objectID error:NULL];
-
-		theTitleLabel.text = folder.name; // Update folder name title text
-	}
-}
-
-- (void)foldersWhereDeleted:(NSNotification *)notification
-{
-	assert(inFolder != nil); // Must not be nil
-
-	if ([inFolder.type integerValue] == DocumentFolderTypeDefault)
-	{
-		[self resetEditMode]; [self reloadDocumentsUpdated]; // Refresh display
-	}
 }
 
 #pragma mark DocumentsUpdate notifications
@@ -862,11 +637,6 @@
 	if ((theAlertView != nil) && (theAlertView.visible == YES))
 	{
 		[theAlertView dismissWithClickedButtonIndex:(-1) animated:NO];
-	}
-
-	if ((popoverController != nil) && (popoverController.popoverVisible == YES))
-	{
-		[popoverController dismissPopoverAnimated:NO];
 	}
 }
 
